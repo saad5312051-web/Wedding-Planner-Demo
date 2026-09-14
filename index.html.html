@@ -1,0 +1,2042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wedding Planner Pro</title>
+<style>
+:root {
+  --primary: #6B8F71; --primary-dark: #4a6651; --primary-light: #e8f0e9;
+  --secondary: #C4A882; --accent: #D4A5A5; --accent-light: #fdf5f5;
+  --bg: #FAF8F5; --card: #FFFFFF; --border: #E8E0D5;
+  --text: #2C2C2C; --muted: #888; --success: #4CAF50;
+  --warn: #FF9800; --danger: #e53935; --sidebar: 256px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;}
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;overflow-y:auto;flex-shrink:0;}
+.sb-brand{padding:18px 16px 12px;border-bottom:1px solid var(--border);text-align:center;}
+.sb-logo{font-size:1.6rem;margin-bottom:6px;}
+.sb-names{font-size:1rem;font-weight:700;color:var(--primary-dark);line-height:1.2;}
+.sb-date{font-size:0.75rem;color:var(--muted);margin-top:3px;}
+.countdown{background:var(--primary-light);padding:10px 16px;text-align:center;border-bottom:1px solid var(--border);}
+.cd-days{font-size:2rem;font-weight:800;color:var(--primary-dark);line-height:1;}
+.cd-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.nav-grp{padding:8px 0;}
+.nav-lbl{padding:4px 14px;font-size:0.62rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:700;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;color:var(--muted);font-size:0.875rem;transition:all .15s;border-left:3px solid transparent;}
+.nav-item:hover{background:var(--bg);color:var(--primary-dark);}
+.nav-item.active{background:var(--primary-light);color:var(--primary-dark);border-left-color:var(--primary);font-weight:600;}
+.nav-item .ni{font-size:1rem;width:18px;text-align:center;}
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;min-width:0;}
+.topbar{height:56px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;}
+.topbar h1{font-size:1.1rem;font-weight:700;}
+.tb-actions{display:flex;gap:6px;align-items:center;}
+.content{flex:1;overflow-y:auto;padding:20px;}
+/* BUTTONS */
+.btn{padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-size:0.85rem;font-weight:500;transition:all .15s;display:inline-flex;align-items:center;gap:5px;font-family:inherit;}
+.btn-primary{background:var(--primary);color:#fff;} .btn-primary:hover{background:var(--primary-dark);}
+.btn-secondary{background:var(--bg);color:var(--text);border:1px solid var(--border);} .btn-secondary:hover{background:var(--border);}
+.btn-danger{background:#fff0f0;color:var(--danger);border:1px solid #fcc;} .btn-danger:hover{background:#fdd;}
+.btn-sm{padding:5px 10px;font-size:0.78rem;}
+.bic{padding:5px;background:none;border:none;cursor:pointer;border-radius:6px;color:var(--muted);font-size:0.95rem;transition:all .15s;line-height:1;}
+.bic:hover{background:var(--bg);color:var(--text);}
+.bic.d:hover{background:#fff0f0;color:var(--danger);}
+/* CARDS */
+.card{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:18px;margin-bottom:14px;}
+.card-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.card-title{font-size:.95rem;font-weight:700;}
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+/* STAT CARDS */
+.sc{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:16px;}
+.sc-label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+.sc-val{font-size:1.7rem;font-weight:800;color:var(--primary-dark);margin:4px 0 2px;}
+.sc-sub{font-size:.78rem;color:var(--muted);}
+/* TABLE */
+.tbl-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);background:#fff;}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--bg);padding:10px 14px;text-align:left;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;border-bottom:1px solid var(--border);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:.875rem;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fdfcfb;}
+/* BADGES */
+.badge{padding:2px 9px;border-radius:20px;font-size:.72rem;font-weight:600;}
+.bg-green{background:#e8f5e9;color:#2e7d32;} .bg-red{background:#ffebee;color:#c62828;}
+.bg-yellow{background:#fff8e1;color:#e65100;} .bg-blue{background:#e3f2fd;color:#1565c0;}
+.bg-gray{background:#f5f5f5;color:#555;} .bg-pink{background:#fce4ec;color:#880e4f;}
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;}
+.modal{background:#fff;border-radius:16px;padding:24px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.modal-lg{max-width:700px;}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.modal-title{font-size:1.1rem;font-weight:700;}
+.modal-ftr{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--border);}
+/* FORM */
+.fg{margin-bottom:14px;}
+.fg label{display:block;font-size:.82rem;font-weight:600;margin-bottom:5px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font-size:.875rem;color:var(--text);background:#fff;transition:border-color .15s;font-family:inherit;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--primary);}
+.fg textarea{resize:vertical;min-height:72px;}
+.fg-cb label{display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:500;}
+.fg-cb input[type=checkbox]{width:16px;height:16px;accent-color:var(--primary);}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+/* TOAST */
+.toast-wrap{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:6px;}
+.toast{background:#2C2C2C;color:#fff;padding:10px 14px;border-radius:10px;font-size:.82rem;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:slideUp .25s ease;max-width:300px;}
+.toast.ok{border-left:3px solid #4CAF50;} .toast.err{border-left:3px solid var(--danger);} .toast.inf{border-left:3px solid var(--primary);}
+@keyframes slideUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+/* PAGES */
+.page{display:none;} .page.active{display:block;}
+/* EMPTY STATE */
+.empty{text-align:center;padding:48px 16px;color:var(--muted);}
+.empty-ico{font-size:2.8rem;display:block;margin-bottom:12px;}
+.empty h3{font-size:1rem;color:var(--text);margin-bottom:6px;}
+.empty p{font-size:.875rem;margin-bottom:16px;}
+/* SEARCH / FILTER */
+.si{padding:7px 11px;border:1px solid var(--border);border-radius:8px;font-size:.82rem;background:#fff;}
+.si:focus{outline:none;border-color:var(--primary);}
+.fi{padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:.82rem;background:#fff;cursor:pointer;}
+.fi:focus{outline:none;border-color:var(--primary);}
+/* TOOLBAR */
+.tb{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px;flex-wrap:wrap;}
+.tb-l{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+/* PROGRESS */
+.prog{height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:4px;background:var(--primary);transition:width .3s;}
+.prog-fill.over{background:var(--danger);}
+/* TASK */
+.task-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.task-row:last-child{border-bottom:none;}
+.task-cb{width:18px;height:18px;accent-color:var(--primary);cursor:pointer;flex-shrink:0;margin-top:2px;}
+.task-info{flex:1;}
+.task-name{font-size:.875rem;font-weight:500;}
+.task-name.done{text-decoration:line-through;color:var(--muted);}
+.task-meta{font-size:.75rem;color:var(--muted);margin-top:2px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+/* VENDOR CARD */
+.vc{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;}
+.vc-hdr{display:flex;justify-content:space-between;align-items:flex-start;}
+.vc-name{font-weight:700;font-size:.95rem;margin:4px 0 2px;}
+.vc-sub{font-size:.78rem;color:var(--muted);}
+/* SEATING */
+.seat-layout{display:flex;gap:16px;}
+.unassigned-panel{width:190px;flex-shrink:0;}
+.chip{display:inline-block;padding:4px 10px;background:var(--accent-light);border:1px solid var(--border);border-radius:20px;font-size:.78rem;cursor:grab;margin:3px;user-select:none;}
+.chip:active{cursor:grabbing;opacity:.7;}
+.s-table{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;}
+.s-table-name{font-weight:700;font-size:.82rem;color:var(--primary-dark);margin-bottom:6px;}
+.seat{padding:5px 8px;background:var(--bg);border-radius:6px;font-size:.78rem;margin-bottom:3px;border:1px dashed var(--border);min-height:28px;cursor:default;transition:all .15s;display:flex;justify-content:space-between;align-items:center;}
+.seat.filled{background:var(--primary-light);border:1px solid var(--primary);border-style:solid;}
+.seat.hover-over{background:#e3f2fd;border-color:#1565c0;}
+/* PARTY */
+.pm-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
+.pm-role{display:inline-block;background:var(--primary-light);color:var(--primary-dark);padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:700;margin-bottom:6px;}
+.pm-name{font-weight:700;font-size:.9rem;}
+.pm-info{font-size:.78rem;color:var(--muted);margin-top:2px;}
+/* ITINERARY */
+.it-row{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);}
+.it-row:last-child{border-bottom:none;}
+.it-time{width:70px;font-size:.875rem;font-weight:700;color:var(--primary-dark);flex-shrink:0;padding-top:2px;}
+.it-info{flex:1;}
+.it-title{font-size:.875rem;font-weight:600;}
+.it-sub{font-size:.78rem;color:var(--muted);margin-top:2px;}
+/* MUSIC */
+.music-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.music-row:last-child{border-bottom:none;}
+.music-num{width:22px;height:22px;border-radius:50%;background:var(--primary-light);color:var(--primary-dark);font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+/* CONTACT */
+.ct-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
+.ct-av{width:38px;height:38px;border-radius:50%;background:var(--primary-light);color:var(--primary-dark);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.95rem;flex-shrink:0;}
+.ct-info{flex:1;min-width:0;}
+.ct-name{font-weight:700;font-size:.875rem;}
+.ct-role{font-size:.75rem;color:var(--muted);}
+.ct-det{font-size:.75rem;color:var(--muted);margin-top:2px;}
+/* HONEYMOON */
+.hm-hero{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-radius:12px;padding:18px;text-align:center;}
+.hm-hero .dest{font-size:1.2rem;font-weight:800;}
+.hm-hero .dates{font-size:.8rem;opacity:.8;margin-top:4px;}
+/* SETTINGS */
+.ss{margin-bottom:24px;}
+.ss-title{font-size:.95rem;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.sr{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);}
+.sr:last-child{border-bottom:none;}
+.sr-label{font-size:.875rem;font-weight:600;}
+.sr-desc{font-size:.75rem;color:var(--muted);margin-top:2px;}
+/* CONFIRM */
+.confirm-body{text-align:center;}
+.confirm-icon{font-size:2.4rem;margin-bottom:10px;}
+/* WELCOME */
+.welcome-body{text-align:center;}
+.welcome-body .wl{font-size:3rem;margin-bottom:12px;}
+.welcome-body h1{font-size:1.7rem;color:var(--primary-dark);margin-bottom:10px;}
+.welcome-body p{color:var(--muted);font-size:.9rem;line-height:1.6;margin-bottom:24px;}
+.wc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.wc{border:2px solid var(--border);border-radius:12px;padding:18px;cursor:pointer;transition:all .2s;text-align:center;}
+.wc:hover{border-color:var(--primary);background:var(--primary-light);}
+.wc .wci{font-size:1.8rem;display:block;margin-bottom:8px;}
+.wc h3{font-size:.9rem;font-weight:700;margin-bottom:4px;}
+.wc p{font-size:.78rem;color:var(--muted);}
+/* DEMO BANNER */
+.demo-banner{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:9px 14px;margin-bottom:14px;font-size:.82rem;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+/* DONUT CHART */
+.donut-wrap{position:relative;width:110px;height:110px;flex-shrink:0;}
+.donut-wrap svg{transform:rotate(-90deg);}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.donut-center .dv{font-size:.95rem;font-weight:800;color:var(--primary-dark);}
+.donut-center .dl{font-size:.62rem;color:var(--muted);}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.leg-item{display:flex;align-items:center;gap:4px;font-size:.73rem;color:var(--muted);}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+/* BUDGET ROW */
+.bgt-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 72px;gap:6px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.bgt-row:last-child{border-bottom:none;}
+/* UTILS */
+.flex{display:flex;} .items-c{align-items:center;} .jc-b{justify-content:space-between;}
+.gap6{gap:6px;} .gap8{gap:8px;} .gap10{gap:10px;}
+.mt8{margin-top:8px;} .mt12{margin-top:12px;} .mt16{margin-top:16px;}
+.mb12{margin-bottom:12px;} .mb16{margin-bottom:16px;}
+.muted{color:var(--muted);} .sm{font-size:.8rem;} .fw7{font-weight:700;}
+.text-danger{color:var(--danger);}
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+/* PRINT */
+/* ═══════════════════════════════════════════════════════
+   MOBILE HAMBURGER & OVERLAY
+═══════════════════════════════════════════════════════ */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;border:none;background:none;flex-shrink:0;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .25s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:99;}
+.mob-overlay.visible{display:block;}
+
+/* ═══════════════════════════════════════════════════════
+   EMERGENCY / WEDDING DAY INFO
+═══════════════════════════════════════════════════════ */
+.wd-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.wd-field{background:var(--bg);border-radius:8px;padding:12px;border:1px solid var(--border);}
+.wd-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;margin-bottom:4px;}
+.wd-val{font-size:.9rem;font-weight:600;color:var(--text);}
+.reminder-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:.8rem;font-weight:600;border:1px solid var(--border);margin:3px;}
+.reminder-chip.done{background:var(--primary-light);color:var(--primary-dark);border-color:var(--primary);}
+.reminder-chip.todo{background:#fff8e1;color:#e65100;border-color:#ffe082;}
+
+/* ═══════════════════════════════════════════════════════
+   MEAL SUMMARY
+═══════════════════════════════════════════════════════ */
+.meal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:10px;}
+.meal-chip{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;text-align:center;}
+.meal-count{font-size:1.4rem;font-weight:800;color:var(--primary-dark);}
+.meal-name{font-size:.75rem;color:var(--muted);margin-top:2px;}
+
+/* ═══════════════════════════════════════════════════════
+   VENDOR ENHANCEMENTS
+═══════════════════════════════════════════════════════ */
+.vendor-status-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.vs-chip{padding:3px 10px;border-radius:12px;font-size:.72rem;font-weight:600;}
+.vs-signed{background:#e8f5e9;color:#2e7d32;}
+.vs-unsigned{background:#fff8e1;color:#e65100;}
+.vs-paid{background:#e8f5e9;color:#2e7d32;}
+.vs-owing{background:#fff0f0;color:var(--danger);}
+
+/* ═══════════════════════════════════════════════════════
+   PRINT — GLOBAL (when no section targeted)
+═══════════════════════════════════════════════════════ */
+@media print{
+  .sidebar,.topbar,.no-print,.btn,.bic,.hamburger,.mob-overlay{display:none!important;}
+  .main{width:100%!important;height:auto!important;overflow:visible!important;}
+  .content{overflow:visible!important;padding:0!important;height:auto!important;}
+  body{height:auto!important;overflow:visible!important;}
+}
+/* SECTION-SPECIFIC PRINT */
+body.print-mode .sidebar,
+body.print-mode .topbar,
+body.print-mode .no-print,
+body.print-mode .hamburger,
+body.print-mode .mob-overlay{display:none!important;}
+body.print-mode{height:auto!important;overflow:visible!important;}
+body.print-mode .main{width:100%!important;height:auto!important;overflow:visible!important;}
+body.print-mode .content{overflow:visible!important;padding:20px!important;height:auto!important;}
+body.print-mode .page{display:none!important;}
+body.print-mode .page.print-target{display:block!important;}
+body.print-mode .print-hide{display:none!important;}
+.print-header{display:none;text-align:center;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--primary);}
+body.print-mode .print-header{display:block;}
+
+/* ═══════════════════════════════════════════════════════
+   OVER-BUDGET STATE
+═══════════════════════════════════════════════════════ */
+.over-budget-badge{background:#fff0f0;color:var(--danger);border:1px solid #fcc;border-radius:8px;padding:6px 12px;font-size:.82rem;font-weight:700;display:inline-flex;align-items:center;gap:5px;}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE — TABLET (1024px)
+═══════════════════════════════════════════════════════ */
+@media(max-width:1024px){
+  :root{--sidebar:220px;}
+  .g4{grid-template-columns:1fr 1fr;}
+  .bgt-row{grid-template-columns:2fr 1fr 1fr 1fr 60px;}
+  .bgt-row>div:nth-child(4){display:none;}
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE — TABLET (768px)
+═══════════════════════════════════════════════════════ */
+@media(max-width:768px){
+  body{overflow:auto;}
+  .sidebar{
+    position:fixed;top:0;left:0;height:100vh;z-index:100;
+    transform:translateX(-100%);transition:transform .28s ease;
+    width:260px!important;box-shadow:4px 0 20px rgba(0,0,0,.12);
+  }
+  .sidebar.mobile-open{transform:translateX(0);}
+  .hamburger{display:flex;}
+  .main{width:100%;height:auto;min-height:100vh;overflow:visible;}
+  .topbar{position:sticky;top:0;z-index:50;}
+  .content{overflow:visible;height:auto;padding:14px;}
+  .g2{grid-template-columns:1fr;}
+  .g3{grid-template-columns:1fr 1fr;}
+  .g4{grid-template-columns:1fr 1fr;}
+  .fr{grid-template-columns:1fr;}
+  .tb{flex-direction:column;align-items:flex-start;}
+  .tb-l{flex-wrap:wrap;}
+  .si{width:100%!important;}
+  .tbl-wrap{overflow-x:auto;}
+  .seat-layout{flex-direction:column;}
+  .unassigned-panel{width:100%;}
+  .wd-grid{grid-template-columns:1fr;}
+  .modal{padding:16px;margin:10px;}
+  .overlay{padding:10px;align-items:flex-start;padding-top:20px;}
+  .modal-lg{max-width:100%;}
+  .wc-grid{grid-template-columns:1fr;}
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE — MOBILE (480px)
+═══════════════════════════════════════════════════════ */
+@media(max-width:480px){
+  .g3{grid-template-columns:1fr;}
+  .g4{grid-template-columns:1fr 1fr;}
+  .topbar h1{font-size:.95rem;}
+  .tb-actions .btn-secondary:first-child{display:none;}
+  .bgt-row{grid-template-columns:2fr 1fr 44px;}
+  .bgt-row>div:nth-child(2),.bgt-row>div:nth-child(3),.bgt-row>div:nth-child(4){display:none;}
+  th,td{padding:8px 10px;font-size:.8rem;}
+  .sc-val{font-size:1.3rem;}
+  .hm-hero .dest{font-size:1rem;}
+  .vc-hdr{flex-direction:column;gap:8px;}
+  .meal-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));}
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE — SMALL (375px)
+═══════════════════════════════════════════════════════ */
+@media(max-width:375px){
+  .g4{grid-template-columns:1fr;}
+  .content{padding:10px;}
+  .card{padding:12px;}
+  .modal{padding:12px;}
+}
+
+</style>
+</head>
+<body>
+
+<div class="toast-wrap" id="toastWrap"></div>
+<div class="mob-overlay" id="mobOverlay" onclick="closeMobileMenu()"></div>
+
+<!-- WELCOME MODAL -->
+<div class="overlay" id="welcomeOverlay">
+  <div class="modal" style="max-width:480px">
+    <div class="welcome-body">
+      <div class="wl">💒</div>
+      <h1>Your Wedding Planner</h1>
+      <p>Everything you need to plan your perfect day — budget, guests, vendors, seating, and more. Opens right in your browser. No spreadsheets, no accounts, no setup.</p>
+      <div class="wc-grid">
+        <div class="wc" onclick="chooseDemo()">
+          <span class="wci">✨</span>
+          <h3>Explore Demo</h3>
+          <p>See all features with realistic sample data you can edit or delete</p>
+        </div>
+        <div class="wc" onclick="chooseBlank()">
+          <span class="wci">📋</span>
+          <h3>Start Fresh</h3>
+          <p>Begin with a completely blank planner</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SETUP MODAL -->
+<div class="overlay" id="setupOverlay" style="display:none">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-hdr"><div class="modal-title">Tell us about your wedding 💕</div></div>
+    <div class="fr">
+      <div class="fg"><label>Partner 1 Name</label><input type="text" id="s1" placeholder="e.g. Sarah"></div>
+      <div class="fg"><label>Partner 2 Name</label><input type="text" id="s2" placeholder="e.g. James"></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Wedding Date</label><input type="date" id="sd"></div>
+      <div class="fg"><label>Currency</label><select id="sc"></select></div>
+    </div>
+    <div class="modal-ftr"><button class="btn btn-primary" onclick="saveSetup()">Let's Start Planning! 🎉</button></div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="overlay" id="editOverlay" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal modal-lg" id="editContent"></div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="overlay" id="confirmOverlay" style="display:none" onclick="if(event.target===this)closeConfirm()">
+  <div class="modal" style="max-width:360px">
+    <div class="confirm-body">
+      <div class="confirm-icon">⚠️</div>
+      <h3 id="confirmTitle">Are you sure?</h3>
+      <p id="confirmMsg" style="color:var(--muted);font-size:.875rem;margin:8px 0 20px;line-height:1.5"></p>
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button class="btn btn-secondary" onclick="closeConfirm()">Cancel</button>
+        <button class="btn btn-danger" id="confirmBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="sidebar" id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">💒</div>
+    <div class="sb-names" id="sbNames">Wedding Planner</div>
+    <div class="sb-date" id="sbDate">Set your wedding date</div>
+  </div>
+  <div class="countdown">
+    <div class="cd-days" id="cdDays">—</div>
+    <div class="cd-label" id="cdLabel">Days to Go</div>
+  </div>
+  <nav>
+    <div class="nav-grp">
+      <div class="nav-lbl">Overview</div>
+      <div class="nav-item active" onclick="nav('dashboard')"><span class="ni">🏠</span>Dashboard</div>
+    </div>
+    <div class="nav-grp">
+      <div class="nav-lbl">Planning</div>
+      <div class="nav-item" onclick="nav('budget')"><span class="ni">💰</span>Budget</div>
+      <div class="nav-item" onclick="nav('vendors')"><span class="ni">🤝</span>Vendors</div>
+      <div class="nav-item" onclick="nav('timeline')"><span class="ni">✅</span>Timeline &amp; Tasks</div>
+      <div class="nav-item" onclick="nav('itinerary')"><span class="ni">🗓️</span>Day Itinerary</div>
+    </div>
+    <div class="nav-grp">
+      <div class="nav-lbl">Guests</div>
+      <div class="nav-item" onclick="nav('guests')"><span class="ni">👥</span>Guest List</div>
+      <div class="nav-item" onclick="nav('seating')"><span class="ni">🪑</span>Seating Plan</div>
+    </div>
+    <div class="nav-grp">
+      <div class="nav-lbl">Extras</div>
+      <div class="nav-item" onclick="nav('party')"><span class="ni">👗</span>Wedding Party</div>
+      <div class="nav-item" onclick="nav('music')"><span class="ni">🎵</span>Music &amp; Playlist</div>
+      <div class="nav-item" onclick="nav('gifts')"><span class="ni">🎁</span>Gifts &amp; Thank You</div>
+      <div class="nav-item" onclick="nav('honeymoon')"><span class="ni">✈️</span>Honeymoon</div>
+      <div class="nav-item" onclick="nav('contacts')"><span class="ni">📞</span>Contacts</div>
+      <div class="nav-item" onclick="nav('emergency')"><span class="ni">🚨</span>Wedding Day Info</div>
+    </div>
+    <div class="nav-grp">
+      <div class="nav-lbl">System</div>
+      <div class="nav-item" onclick="nav('settings')"><span class="ni">⚙️</span>Settings</div>
+    </div>
+  </nav>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <button class="hamburger no-print" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <h1 id="pageTitle">Dashboard</h1>
+    <div class="tb-actions">
+      <button class="btn btn-secondary btn-sm no-print" onclick="doExport()">⬇️ Export Backup</button>
+      <button class="btn btn-secondary btn-sm no-print" onclick="document.getElementById('importFile').click()">⬆️ Import</button>
+      <input type="file" id="importFile" style="display:none" accept=".json" onchange="doImport(event)">
+    </div>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div id="demoBanner"></div>
+      <div class="g4 mb16" id="dashStats"></div>
+      <div class="g2">
+        <div>
+          <div class="card" id="dashTasks"></div>
+          <div class="card" id="dashBudget"></div>
+        </div>
+        <div>
+          <div class="card" id="dashGuests"></div>
+          <div class="card" id="dashVendors"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUDGET -->
+    <div class="page" id="page-budget">
+      <div class="print-header"><h2>💰 Wedding Budget — Wedding Planner</h2></div>
+      <div class="tb">
+        <div class="tb-l">
+          <button class="btn btn-primary" onclick="openBudgetCat()">+ Add Category</button>
+          <button class="btn btn-secondary" onclick="editTotalBudget()">Set Total Budget</button>
+          <button class="btn btn-danger btn-sm" onclick="clearData('budget','budgetTotal')">🗑️ Clear All</button>
+          <button class="btn btn-secondary btn-sm no-print" onclick="printSection('budget','Wedding Budget')">🖨️ Print</button>
+        </div>
+        <div class="muted sm" id="budgetHdr"></div>
+      </div>
+      <div class="g2 mb16">
+        <div class="card">
+          <div class="card-hdr"><div class="card-title">Budget Overview</div></div>
+          <div id="budgetOverview"></div>
+        </div>
+        <div class="card">
+          <div class="card-hdr"><div class="card-title">Spending by Category</div></div>
+          <div id="budgetChart" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">Categories</div></div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 72px;gap:6px;padding:6px 0;border-bottom:1px solid var(--border);font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase">
+          <div>Category</div><div>Budgeted</div><div>Paid</div><div>Due</div><div>Due Date</div><div></div>
+        </div>
+        <div id="budgetList"></div>
+        <div id="budgetTotals"></div>
+      </div>
+    </div>
+
+    <!-- GUESTS -->
+    <div class="page" id="page-guests">
+      <div class="print-header"><h2>👥 Guest List — Wedding Planner</h2></div>
+      <div class="tb">
+        <div class="tb-l">
+          <button class="btn btn-primary" onclick="openGuest()">+ Add Guest</button>
+          <button class="btn btn-danger btn-sm" onclick="clearData('guests')">🗑️ Clear All</button>
+          <button class="btn btn-secondary btn-sm no-print" onclick="printSection('guests','Guest List')">🖨️ Print</button>
+          <input class="si" placeholder="Search guests…" oninput="gFilter.text=this.value;renderGuests()" style="width:200px">
+          <select class="fi" onchange="gFilter.rsvp=this.value;renderGuests()">
+            <option value="">All RSVPs</option>
+            <option value="attending">Attending</option>
+            <option value="declined">Declined</option>
+            <option value="pending">Pending</option>
+          </select>
+          <select class="fi" onchange="gFilter.side=this.value;renderGuests()">
+            <option value="">All Sides</option>
+            <option>Bride</option><option>Groom</option><option>Mutual</option>
+          </select>
+        </div>
+      </div>
+      <div class="g4 mb16" id="guestStats"></div>
+      <div class="tbl-wrap"><table><thead><tr>
+        <th>Name</th><th>Side</th><th>RSVP</th><th>Meal</th><th>Dietary</th>
+        <th>Save Date</th><th>Invite</th><th>Gift</th><th>Actions</th>
+      </tr></thead><tbody id="guestTbody"></tbody></table></div>
+      <div id="guestEmpty" style="display:none"></div>
+      <div class="card" style="margin-top:14px" id="mealSummaryCard"></div>
+    </div>
+
+    <!-- SEATING -->
+    <div class="page" id="page-seating">
+      <div class="print-header"><h2>🪑 Seating Plan — Wedding Planner</h2></div>
+      <div class="tb">
+        <div class="tb-l">
+          <button class="btn btn-primary" onclick="openTable()">+ Add Table</button>
+          <button class="btn btn-danger btn-sm" onclick="clearData('seating')">🗑️ Clear All</button>
+          <button class="btn btn-secondary btn-sm no-print" onclick="printSection('seating','Seating Plan')">🖨️ Print</button>
+        </div>
+        <div class="muted sm" id="seatStats"></div>
+        <div id="mobileSeatingHint" class="muted sm" style="display:none;margin-top:6px;font-style:italic">Tip: On mobile, tap 🪑 Assign on any unassigned guest chip to place them.</div>
+      </div>
+      <div class="seat-layout">
+        <div class="unassigned-panel">
+          <div class="card" style="padding:12px">
+            <div style="font-weight:700;font-size:.82rem;margin-bottom:8px">👥 Unassigned</div>
+            <div id="unassigned"></div>
+          </div>
+        </div>
+        <div style="flex:1"><div id="seatTables"></div></div>
+      </div>
+    </div>
+
+    <!-- VENDORS -->
+    <div class="page" id="page-vendors">
+      <div class="print-header"><h2>🤝 Vendor List — Wedding Planner</h2></div>
+      <div class="tb">
+        <div class="tb-l">
+          <button class="btn btn-primary" onclick="openVendor()">+ Add Vendor</button>
+          <select class="fi" onchange="vFilter=this.value;renderVendors()">
+            <option value="">All Categories</option>
+            <option>Venue</option><option>Catering</option><option>Photography</option>
+            <option>Videography</option><option>Florals</option><option>Music / DJ</option>
+            <option>Cake</option><option>Hair &amp; Makeup</option><option>Transport</option>
+            <option>Officiant</option><option>Rentals</option><option>Invitations</option><option>Other</option>
+          </select>
+          <button class="btn btn-danger btn-sm" onclick="clearData('vendors')">🗑️ Clear All</button>
+          <button class="btn btn-secondary btn-sm no-print" onclick="printSection('vendors','Vendor List')">🖨️ Print</button>
+        </div>
+      </div>
+      <div id="vendorList"></div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="page" id="page-timeline">
+      <div class="print-header"><h2>✅ Wedding Timeline — Wedding Planner</h2></div>
+      <div class="tb">
+        <div class="tb-l">
+          <button class="btn btn-primary" onclick="openTask()">+ Add Task</button>
+          <select class="fi" onchange="tFilter=this.value;renderTimeline()">
+            <option value="">All Timeframes</option>
+            <option>12+ Months Before</option><option>6–12 Months Before</option>
+            <option>3–6 Months Before</option><option>1–3 Months Before</option>
+            <option>2–4 Weeks Before</option><option>Wedding Week</option><option>Wedding Day</option>
+          </select>
+          <button class="btn btn-danger btn-sm" onclick="clearData('tasks')">🗑️ Clear All</button>
+          <button class="btn btn-secondary btn-sm no-print" onclick="openChecklistTemplates()">📋 Load Template</button>
+          <button class="btn btn-secondary btn-sm no-print" onclick="printSection('timeline','Wedding Timeline')">🖨️ Print</button>
+        </div>
+      </div>
+      <div class="card mb16" id="taskProgress"></div>
+      <div id="taskGroups"></div>
+    </div>
+
+    <!-- ITINERARY -->
+    <div class="page" id="page-itinerary">
+      <div class="print-header"><h2>🗓️ Wedding Day Itinerary — Wedding Planner</h2></div>
+      <div class="tb">
+        <div class="tb-l">
+          <button class="btn btn-primary" onclick="openItinerary()">+ Add Event</button>
+          <button class="btn btn-danger btn-sm" onclick="clearData('itinerary')">🗑️ Clear All</button>
+          <button class="btn btn-secondary btn-sm no-print" onclick="printSection('itinerary','Wedding Day Itinerary')">🖨️ Print</button>
+        </div>
+      </div>
+      <div class="card"><div class="card-hdr"><div class="card-title">Wedding Day Schedule</div></div><div id="itineraryList"></div></div>
+    </div>
+
+    <!-- PARTY -->
+    <div class="page" id="page-party">
+      <div class="tb">
+        <div class="tb-l">
+          <button class="btn btn-primary" onclick="openPartyMember()">+ Add Member</button>
+          <button class="btn btn-danger btn-sm" onclick="clearData('party')">🗑️ Clear All</button>
+        </div>
+      </div>
+      <div id="partyGrid"></div>
+    </div>
+
+    <!-- MUSIC -->
+    <div class="page" id="page-music">
+      <div class="tb">
+        <div class="tb-l">
+          <button class="btn btn-primary" onclick="openSong()">+ Add Song</button>
+          <button class="btn btn-danger btn-sm" onclick="clearData('music')">🗑️ Clear All</button>
+        </div>
+      </div>
+      <div id="musicSections"></div>
+    </div>
+
+    <!-- GIFTS -->
+    <div class="page" id="page-gifts">
+      <div class="print-header"><h2>🎁 Gift Tracker — Wedding Planner</h2></div>
+      <div class="tb">
+        <div class="tb-l">
+          <button class="btn btn-primary" onclick="openGift()">+ Add Gift</button>
+          <button class="btn btn-danger btn-sm" onclick="clearData('gifts')">🗑️ Clear All</button>
+          <button class="btn btn-secondary btn-sm no-print" onclick="printSection('gifts','Gift Tracker')">🖨️ Print</button>
+        </div>
+        <div class="muted sm" id="giftStats"></div>
+      </div>
+      <div class="tbl-wrap"><table><thead><tr>
+        <th>From</th><th>Gift</th><th>Value</th><th>Thank You</th><th>Notes</th><th>Actions</th>
+      </tr></thead><tbody id="giftTbody"></tbody></table></div>
+    </div>
+
+    <!-- HONEYMOON -->
+    <div class="page" id="page-honeymoon">
+      <div class="tb">
+        <div class="tb-l">
+          <button class="btn btn-secondary" onclick="openHoneymoonInfo()">✏️ Edit Trip Info</button>
+          <button class="btn btn-primary" onclick="openHoneymoonExp()">+ Add Expense</button>
+          <button class="btn btn-danger btn-sm" onclick="clearHoneymoonExp()">🗑️ Clear Expenses</button>
+        </div>
+      </div>
+      <div class="g3 mb16" id="hmStats"></div>
+      <div class="card"><div class="card-hdr"><div class="card-title">Expenses</div></div><div id="hmExpenses"></div></div>
+    </div>
+
+    <!-- CONTACTS -->
+    <div class="page" id="page-contacts">
+      <div class="tb">
+        <div class="tb-l">
+          <button class="btn btn-primary" onclick="openContact()">+ Add Contact</button>
+          <button class="btn btn-danger btn-sm" onclick="clearData('contacts')">🗑️ Clear All</button>
+          <input class="si" placeholder="Search contacts…" oninput="ctFilter=this.value;renderContacts()" style="width:200px">
+        </div>
+      </div>
+      <div id="contactsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px"></div>
+      <div id="contactsEmpty" style="display:none"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page" id="page-settings">
+      <div class="card">
+        <div class="ss">
+          <div class="ss-title">Wedding Details</div>
+          <div class="fr">
+            <div class="fg"><label>Partner 1 Name</label><input type="text" id="sn1" onchange="saveSettings()"></div>
+            <div class="fg"><label>Partner 2 Name</label><input type="text" id="sn2" onchange="saveSettings()"></div>
+          </div>
+          <div class="fr">
+            <div class="fg"><label>Wedding Date</label><input type="date" id="sdt" onchange="saveSettings()"></div>
+            <div class="fg"><label>Currency</label><select id="scur" onchange="saveSettings()"></select></div>
+          </div>
+        </div>
+        <div class="ss">
+          <div class="ss-title">Data Management</div>
+          <div class="sr"><div><div class="sr-label">Export All Data</div><div class="sr-desc">Full JSON backup of your planner</div></div><button class="btn btn-secondary btn-sm" onclick="doExport()">⬇️ Export</button></div>
+          <div class="sr"><div><div class="sr-label">Import Data</div><div class="sr-desc">Restore from a backup file</div></div><button class="btn btn-secondary btn-sm" onclick="document.getElementById('importFile').click()">⬆️ Import</button></div>
+          <div class="sr"><div><div class="sr-label">Reload Demo Data</div><div class="sr-desc">Replace current data with sample data</div></div><button class="btn btn-secondary btn-sm" onclick="confirm2('Reload demo data?','This will overwrite your current planner data.',loadDemoData)">🔄 Demo</button></div>
+        </div>
+        <div class="ss">
+          <div class="ss-title">Clear Individual Sections</div>
+          <div class="sr"><div class="sr-label">Budget</div><button class="btn btn-danger btn-sm" onclick="clearData('budget','budgetTotal')">Clear</button></div>
+          <div class="sr"><div class="sr-label">Guest List</div><button class="btn btn-danger btn-sm" onclick="clearData('guests')">Clear</button></div>
+          <div class="sr"><div class="sr-label">Seating Plan</div><button class="btn btn-danger btn-sm" onclick="clearData('seating')">Clear</button></div>
+          <div class="sr"><div class="sr-label">Vendors</div><button class="btn btn-danger btn-sm" onclick="clearData('vendors')">Clear</button></div>
+          <div class="sr"><div class="sr-label">Tasks &amp; Timeline</div><button class="btn btn-danger btn-sm" onclick="clearData('tasks')">Clear</button></div>
+          <div class="sr"><div class="sr-label">Day Itinerary</div><button class="btn btn-danger btn-sm" onclick="clearData('itinerary')">Clear</button></div>
+          <div class="sr"><div class="sr-label">Wedding Party</div><button class="btn btn-danger btn-sm" onclick="clearData('party')">Clear</button></div>
+          <div class="sr"><div class="sr-label">Music</div><button class="btn btn-danger btn-sm" onclick="clearData('music')">Clear</button></div>
+          <div class="sr"><div class="sr-label">Gifts</div><button class="btn btn-danger btn-sm" onclick="clearData('gifts')">Clear</button></div>
+          <div class="sr"><div class="sr-label">Honeymoon</div><button class="btn btn-danger btn-sm" onclick="clearData('honeymoon')">Clear</button></div>
+          <div class="sr"><div class="sr-label">Contacts</div><button class="btn btn-danger btn-sm" onclick="clearData('contacts')">Clear</button></div>
+          <div class="sr"><div class="sr-label">Wedding Day Info</div><button class="btn btn-danger btn-sm" onclick="clearData('emergency')">Clear</button></div>
+        </div>
+        <div class="ss">
+          <div class="ss-title">Reset</div>
+          <div class="sr">
+            <div><div class="sr-label text-danger">⚠️ Reset Everything</div><div class="sr-desc">Deletes all data permanently and restarts the planner</div></div>
+            <button class="btn btn-danger" onclick="resetAll()">Reset All</button>
+          </div>
+        </div>
+        <div id="storageInfo" class="muted sm"></div>
+      </div>
+    </div>
+
+
+    <!-- EMERGENCY / WEDDING DAY INFO -->
+    <div class="page" id="page-emergency">
+      <div class="tb">
+        <div class="tb-l">
+          <button class="btn btn-primary" onclick="openEmergency()">✏️ Edit Wedding Day Info</button>
+          <button class="btn btn-secondary no-print" onclick="printSection('emergency','Wedding Day Info')">🖨️ Print</button>
+        </div>
+      </div>
+      <div class="print-header"><h2>💒 Wedding Day Information</h2></div>
+      <div id="emergencyContent"></div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+// ═══════════════════════════════════════════════════════
+// CONSTANTS & STATE
+// ═══════════════════════════════════════════════════════
+const K = {
+  init:'wp_init', isDemo:'wp_demo', settings:'wp_settings',
+  budget:'wp_budget', budgetTotal:'wp_budgetTotal', guests:'wp_guests',
+  vendors:'wp_vendors', tasks:'wp_tasks', itinerary:'wp_itinerary',
+  party:'wp_party', music:'wp_music', gifts:'wp_gifts',
+  honeymoon:'wp_honeymoon', contacts:'wp_contacts', seating:'wp_seating',
+  emergency:'wp_emergency'
+};
+
+
+// ═══════════════════════════════════════════════════════
+// HTML ESCAPE UTILITY — prevents XSS / broken characters
+// ═══════════════════════════════════════════════════════
+function escapeHTML(str){
+  if(str===null||str===undefined)return'';
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+// Safe version for use inside JS onclick strings (escapes single quotes)
+function esc(str){return escapeHTML(str);}
+
+const CURR = {
+  USD:'$',EUR:'€',GBP:'£',PKR:'₨',AED:'د.إ',INR:'₹',CAD:'CA$',
+  AUD:'A$',SAR:'﷼',TRY:'₺',MYR:'RM',NGN:'₦',ZAR:'R',BDT:'৳',
+  IDR:'Rp',PHP:'₱',SGD:'S$',HKD:'HK$',CHF:'CHF',JPY:'¥',CNY:'¥',
+  KWD:'KD',QAR:'QR',BHD:'BD',OMR:'OMR'
+};
+
+const CURR_NAMES = {
+  USD:'US Dollar',EUR:'Euro',GBP:'British Pound',PKR:'Pakistani Rupee',
+  AED:'UAE Dirham',INR:'Indian Rupee',CAD:'Canadian Dollar',AUD:'Australian Dollar',
+  SAR:'Saudi Riyal',TRY:'Turkish Lira',MYR:'Malaysian Ringgit',NGN:'Nigerian Naira',
+  ZAR:'South African Rand',BDT:'Bangladeshi Taka',IDR:'Indonesian Rupiah',
+  PHP:'Philippine Peso',SGD:'Singapore Dollar',HKD:'Hong Kong Dollar',
+  CHF:'Swiss Franc',JPY:'Japanese Yen',CNY:'Chinese Yuan',
+  KWD:'Kuwaiti Dinar',QAR:'Qatari Riyal',BHD:'Bahraini Dinar',OMR:'Omani Rial'
+};
+
+const TIMEFRAMES=['12+ Months Before','6–12 Months Before','3–6 Months Before','1–3 Months Before','2–4 Weeks Before','Wedding Week','Wedding Day'];
+const MUSIC_SECS=['Processional','Ceremony','First Dance','Father-Daughter','Mother-Son','Reception','Last Dance','Do Not Play'];
+const PARTY_ROLES=['Maid of Honor','Bridesmaid','Best Man','Groomsman','Flower Girl','Ring Bearer','Officiant','Father of Bride','Mother of Bride','Father of Groom','Mother of Groom','Other'];
+const VENDOR_CATS=['Venue','Catering','Photography','Videography','Florals','Music / DJ','Cake','Hair & Makeup','Transport','Officiant','Rentals','Invitations','Other'];
+const HM_CATS=['Flights','Hotel','Food','Activities','Transport','Shopping','Other'];
+const CHART_COLORS=['#6B8F71','#C4A882','#D4A5A5','#8FA8C8','#C8A87A','#A5C4A5','#C8A5A5','#8FBFD4','#D4C8A5','#A5A5C4','#C4A5C8','#A5C4C8'];
+const PAGE_TITLES={dashboard:'Dashboard',budget:'Wedding Budget',guests:'Guest List',seating:'Seating Plan',vendors:'Vendors',timeline:'Timeline & Tasks',itinerary:'Day Itinerary',party:'Wedding Party',music:'Music & Playlist',gifts:'Gifts & Thank You',honeymoon:'Honeymoon',contacts:'Contacts',settings:'Settings',emergency:'Wedding Day Info'};
+
+let currentPage='dashboard';
+let confirmCb=null;
+let gFilter={text:'',rsvp:'',side:''};
+let vFilter='', tFilter='', ctFilter='';
+
+// ═══════════════════════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════════════════════
+const load=(k,fb=null)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):fb;}catch{return fb;}};
+const save=(k,d)=>{localStorage.setItem(k,JSON.stringify(d));};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const fdate=(days=0)=>{const d=new Date();d.setDate(d.getDate()+days);return d.toISOString().split('T')[0];};
+
+function getSettings(){return load(K.settings,{name1:'',name2:'',date:'',currency:'USD'});}
+function getCurrSym(){const s=getSettings();return CURR[s.currency]||'$';}
+function fmt(n){const s=getSettings();const sym=CURR[s.currency]||'$';return sym+Number(n||0).toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:0});}
+function getDays(){const s=getSettings();if(!s.date)return null;const t=new Date();t.setHours(0,0,0,0);const w=new Date(s.date+'T00:00:00');return Math.ceil((w-t)/86400000);}
+
+function buildCurrSelect(elId){
+  const el=document.getElementById(elId);if(!el)return;
+  el.innerHTML=Object.keys(CURR).map(c=>`<option value="${c}">${c} – ${CURR_NAMES[c]} (${CURR[c]})</option>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════
+function toast(msg,type='ok'){
+  const w=document.getElementById('toastWrap');
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;
+  const ic={ok:'✓',err:'✗',inf:'ℹ'};
+  t.innerHTML=`<span>${ic[type]||'ℹ'}</span><span>${msg}</span>`;
+  w.appendChild(t);setTimeout(()=>t.remove(),2800);
+}
+
+// ═══════════════════════════════════════════════════════
+// CONFIRM
+// ═══════════════════════════════════════════════════════
+function confirm2(title,msg,cb,btnLabel='Delete'){
+  document.getElementById('confirmTitle').textContent=title;
+  document.getElementById('confirmMsg').textContent=msg;
+  document.getElementById('confirmBtn').textContent=btnLabel;
+  document.getElementById('confirmOverlay').style.display='flex';
+  confirmCb=cb;
+}
+function closeConfirm(){document.getElementById('confirmOverlay').style.display='none';confirmCb=null;}
+document.getElementById('confirmBtn').onclick=()=>{if(confirmCb)confirmCb();closeConfirm();};
+
+// ═══════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════
+function openModal(html){document.getElementById('editContent').innerHTML=html;document.getElementById('editOverlay').style.display='flex';}
+function closeModal(){document.getElementById('editOverlay').style.display='none';}
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
+function nav(name){
+  if(window.innerWidth<=768)closeMobileMenu();
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name)?.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{if(n.getAttribute('onclick')?.includes(`'${name}'`))n.classList.add('active');});
+  document.getElementById('pageTitle').textContent=PAGE_TITLES[name]||name;
+  currentPage=name;
+  renderPage();
+}
+
+function renderPage(){
+  switch(currentPage){
+    case'dashboard':renderDashboard();break;
+    case'budget':renderBudget();break;
+    case'guests':renderGuests();break;
+    case'seating':renderSeating();break;
+    case'vendors':renderVendors();break;
+    case'timeline':renderTimeline();break;
+    case'itinerary':renderItinerary();break;
+    case'party':renderParty();break;
+    case'music':renderMusic();break;
+    case'gifts':renderGifts();break;
+    case'honeymoon':renderHoneymoon();break;
+    case'contacts':renderContacts();break;
+    case'emergency':renderEmergency();break;
+    case'settings':loadSettingsForm();break;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════════════════════════
+function updateSidebar(){
+  const s=getSettings();
+  const days=getDays();
+  document.getElementById('sbNames').textContent=(s.name1&&s.name2)?`${escapeHTML(s.name1)} & ${escapeHTML(s.name2)}`:'Wedding Planner';
+  document.getElementById('sbDate').textContent=s.date?new Date(s.date+'T00:00:00').toLocaleDateString('en',{day:'numeric',month:'long',year:'numeric'}):'Set your wedding date';
+  const cdEl=document.getElementById('cdDays');
+  const lbEl=document.getElementById('cdLabel');
+  if(days===null){cdEl.textContent='—';}
+  else if(days<0){cdEl.textContent='🎉';lbEl.textContent='Congratulations!';}
+  else if(days===0){cdEl.textContent='TODAY';lbEl.textContent='Your Wedding Day!';}
+  else{cdEl.textContent=days;lbEl.textContent='Days to Go';}
+}
+
+// ═══════════════════════════════════════════════════════
+// WELCOME & SETUP
+// ═══════════════════════════════════════════════════════
+function chooseDemo(){document.getElementById('welcomeOverlay').style.display='none';loadDemoData();save(K.init,'yes');save(K.isDemo,'yes');updateSidebar();nav('dashboard');toast('Demo data loaded — explore and edit anything! ✨','ok');}
+function chooseBlank(){document.getElementById('welcomeOverlay').style.display='none';document.getElementById('setupOverlay').style.display='flex';}
+
+function saveSetup(){
+  const n1=document.getElementById('s1').value.trim()||'Partner 1';
+  const n2=document.getElementById('s2').value.trim()||'Partner 2';
+  const dt=document.getElementById('sd').value;
+  const cur=document.getElementById('sc').value||'USD';
+  save(K.settings,{name1:n1,name2:n2,date:dt,currency:cur});
+  save(K.init,'yes');save(K.isDemo,'no');
+  document.getElementById('setupOverlay').style.display='none';
+  updateSidebar();nav('dashboard');
+  toast(`Welcome, ${n1} & ${n2}! Let's plan your wedding 💕`,'ok');
+}
+
+// ═══════════════════════════════════════════════════════
+// DEMO DATA
+// ═══════════════════════════════════════════════════════
+function loadDemoData(){
+  save(K.settings,{name1:'Sarah',name2:'James',date:fdate(180),currency:'USD'});
+  save(K.budgetTotal,35000);
+  save(K.budget,[
+    {id:uid(),name:'Venue',budgeted:8000,paid:4000,due:4000,dueDate:fdate(30),notes:'Grand Manor Ballroom'},
+    {id:uid(),name:'Catering',budgeted:7000,paid:2000,due:5000,dueDate:fdate(60),notes:'$70/person × 100 guests'},
+    {id:uid(),name:'Photography',budgeted:3500,paid:1000,due:2500,dueDate:fdate(45),notes:'Emma Ray Photography'},
+    {id:uid(),name:'Florals',budgeted:2500,paid:500,due:2000,dueDate:fdate(20),notes:'Arch + table centers'},
+    {id:uid(),name:'Music / DJ',budgeted:1500,paid:500,due:1000,dueDate:fdate(14),notes:''},
+    {id:uid(),name:'Wedding Cake',budgeted:800,paid:200,due:600,dueDate:fdate(25),notes:'5-tier fondant'},
+    {id:uid(),name:'Attire',budgeted:3000,paid:2500,due:500,dueDate:fdate(10),notes:'Dress + suit'},
+    {id:uid(),name:'Hair & Makeup',budgeted:1200,paid:200,due:1000,dueDate:fdate(5),notes:''},
+    {id:uid(),name:'Invitations',budgeted:600,paid:600,due:0,dueDate:'',notes:'All sent!'},
+    {id:uid(),name:'Transport',budgeted:800,paid:0,due:800,dueDate:fdate(15),notes:''},
+    {id:uid(),name:'Honeymoon Fund',budgeted:4000,paid:1500,due:2500,dueDate:fdate(90),notes:'Bali'},
+    {id:uid(),name:'Miscellaneous',budgeted:2100,paid:0,due:2100,dueDate:'',notes:''},
+  ]);
+  const g=[
+    {id:'g1',name:'Michael Johnson',side:'Groom',rsvp:'attending',meal:'Chicken',dietary:'',address:'123 Oak St, New York',inviteSent:true,saveDate:true,giftRcvd:true,notes:''},
+    {id:'g2',name:'Emily Thompson',side:'Bride',rsvp:'attending',meal:'Vegetarian',dietary:'Vegan',address:'45 Pine Ave, Chicago',inviteSent:true,saveDate:true,giftRcvd:false,notes:''},
+    {id:'g3',name:'David Wilson',side:'Mutual',rsvp:'attending',meal:'Fish',dietary:'',address:'78 Maple Dr, Boston',inviteSent:true,saveDate:true,giftRcvd:false,notes:''},
+    {id:'g4',name:'Jessica Brown',side:'Bride',rsvp:'pending',meal:'',dietary:'Gluten-free',address:'22 Elm St, Miami',inviteSent:true,saveDate:false,giftRcvd:false,notes:''},
+    {id:'g5',name:'Robert Davis',side:'Groom',rsvp:'attending',meal:'Beef',dietary:'',address:'90 Oak Blvd, LA',inviteSent:true,saveDate:true,giftRcvd:true,notes:'Best Man'},
+    {id:'g6',name:'Amanda Martinez',side:'Bride',rsvp:'declined',meal:'',dietary:'',address:'15 Cedar Ln, Seattle',inviteSent:true,saveDate:true,giftRcvd:false,notes:'Traveling abroad'},
+    {id:'g7',name:'Christopher Lee',side:'Groom',rsvp:'attending',meal:'Chicken',dietary:'',address:'67 Birch Rd, Denver',inviteSent:true,saveDate:true,giftRcvd:false,notes:''},
+    {id:'g8',name:'Sarah Williams',side:'Bride',rsvp:'attending',meal:'Vegetarian',dietary:'',address:'34 Spruce Way, Austin',inviteSent:true,saveDate:true,giftRcvd:true,notes:'MOH'},
+    {id:'g9',name:'Thomas Anderson',side:'Mutual',rsvp:'pending',meal:'',dietary:'',address:'',inviteSent:true,saveDate:false,giftRcvd:false,notes:''},
+    {id:'g10',name:'Lisa Garcia',side:'Bride',rsvp:'attending',meal:'Fish',dietary:'Nut allergy',address:'123 Ash St, Portland',inviteSent:true,saveDate:true,giftRcvd:false,notes:''},
+  ];
+  save(K.guests,g);
+  save(K.vendors,[
+    {id:uid(),category:'Venue',name:'Grand Manor Ballroom',contact:'John Smith',phone:'+1 555-0101',email:'events@grandmanor.com',website:'grandmanor.com',amount:8000,paid:4000,dueDate:fdate(30),notes:'Ceremony + reception hall'},
+    {id:uid(),category:'Photography',name:'Emma Ray Photography',contact:'Emma Ray',phone:'+1 555-0102',email:'emma@emmaray.com',website:'emmaray.com',amount:3500,paid:1000,dueDate:fdate(45),notes:'8-hour coverage + album'},
+    {id:uid(),category:'Florals',name:'Bloom & Petal Studio',contact:'Maria Garcia',phone:'+1 555-0103',email:'hello@bloomandpetal.com',website:'',amount:2500,paid:500,dueDate:fdate(20),notes:'Arch + table centerpieces'},
+    {id:uid(),category:'Music / DJ',name:'Beats & Celebrations',contact:'DJ Marcus',phone:'+1 555-0104',email:'marcus@beats.com',website:'',amount:1500,paid:500,dueDate:fdate(14),notes:'6-hour reception DJ'},
+    {id:uid(),category:'Catering',name:'Harvest Table Catering',contact:'Chef Antonio',phone:'+1 555-0105',email:'info@harvesttable.com',website:'harvesttable.com',amount:7000,paid:2000,dueDate:fdate(60),notes:'3-course dinner, 100 guests'},
+  ]);
+  save(K.tasks,[
+    {id:uid(),name:'Set a wedding date',tf:'12+ Months Before',priority:'High',done:true,dueDate:'',notes:''},
+    {id:uid(),name:'Create a wedding budget',tf:'12+ Months Before',priority:'High',done:true,dueDate:'',notes:''},
+    {id:uid(),name:'Book the venue',tf:'12+ Months Before',priority:'High',done:true,dueDate:'',notes:'Grand Manor Ballroom'},
+    {id:uid(),name:'Book photographer',tf:'6–12 Months Before',priority:'High',done:true,dueDate:'',notes:''},
+    {id:uid(),name:'Book caterer',tf:'6–12 Months Before',priority:'High',done:true,dueDate:'',notes:''},
+    {id:uid(),name:'Choose bridal party',tf:'6–12 Months Before',priority:'Medium',done:true,dueDate:'',notes:''},
+    {id:uid(),name:'Order wedding dress',tf:'6–12 Months Before',priority:'High',done:false,dueDate:fdate(14),notes:"Allow 4-6 months for alterations"},
+    {id:uid(),name:'Book florist',tf:'3–6 Months Before',priority:'Medium',done:true,dueDate:'',notes:''},
+    {id:uid(),name:'Send save the dates',tf:'3–6 Months Before',priority:'High',done:true,dueDate:'',notes:''},
+    {id:uid(),name:'Send invitations',tf:'3–6 Months Before',priority:'High',done:true,dueDate:'',notes:''},
+    {id:uid(),name:'Finalize guest list',tf:'1–3 Months Before',priority:'High',done:false,dueDate:fdate(21),notes:''},
+    {id:uid(),name:'Final dress fitting',tf:'1–3 Months Before',priority:'High',done:false,dueDate:fdate(30),notes:''},
+    {id:uid(),name:'Create seating chart',tf:'2–4 Weeks Before',priority:'High',done:false,dueDate:fdate(35),notes:''},
+    {id:uid(),name:'Confirm all vendors',tf:'2–4 Weeks Before',priority:'High',done:false,dueDate:fdate(40),notes:''},
+    {id:uid(),name:'Rehearsal dinner',tf:'Wedding Week',priority:'High',done:false,dueDate:fdate(179),notes:''},
+    {id:uid(),name:'Get a good night\'s sleep!',tf:'Wedding Day',priority:'High',done:false,dueDate:'',notes:'😄'},
+  ]);
+  save(K.itinerary,[
+    {id:uid(),time:'08:00',event:'Bridal suite opens',person:'Bride + Bridal Party',location:'Suite 204',notes:''},
+    {id:uid(),time:'09:00',event:'Hair & Makeup begins',person:'Bridal Party',location:'Suite 204',notes:'Bride last'},
+    {id:uid(),time:'11:30',event:'Groom & groomsmen get ready',person:'Groom + Groomsmen',location:'Room 110',notes:''},
+    {id:uid(),time:'13:00',event:'First look photos',person:'Bride + Groom',location:'Garden',notes:'Private moment'},
+    {id:uid(),time:'14:00',event:'Wedding party portraits',person:'All',location:'Garden',notes:''},
+    {id:uid(),time:'15:30',event:'Guests arrive',person:'Guests',location:'Grand Entrance',notes:'Ushers in position'},
+    {id:uid(),time:'16:00',event:'Ceremony begins',person:'All',location:'Main Hall',notes:''},
+    {id:uid(),time:'16:45',event:'Cocktail hour',person:'Guests',location:'Garden Terrace',notes:''},
+    {id:uid(),time:'18:00',event:'Reception doors open',person:'All',location:'Ballroom',notes:''},
+    {id:uid(),time:'18:15',event:'Grand couple introduction',person:'Bride + Groom',location:'Ballroom',notes:''},
+    {id:uid(),time:'18:30',event:'Dinner service',person:'All',location:'Ballroom',notes:''},
+    {id:uid(),time:'19:30',event:'Speeches & toasts',person:'Best Man, MOH, Parents',location:'Ballroom',notes:''},
+    {id:uid(),time:'20:00',event:'First dance',person:'Bride + Groom',location:'Dance Floor',notes:''},
+    {id:uid(),time:'20:15',event:'Open dancing begins',person:'All',location:'Dance Floor',notes:''},
+    {id:uid(),time:'21:00',event:'Cake cutting',person:'Bride + Groom',location:'Ballroom',notes:''},
+    {id:uid(),time:'23:00',event:'Last dance',person:'All',location:'Dance Floor',notes:''},
+    {id:uid(),time:'23:30',event:'Grand exit',person:'Bride + Groom',location:'Main Entrance',notes:'Sparkler send-off'},
+  ]);
+  save(K.party,[
+    {id:uid(),role:'Maid of Honor',name:'Sarah Williams',phone:'+1 555-0201',email:'sarah@email.com',attire:'Sage green gown',notes:'Best friend since college'},
+    {id:uid(),role:'Bridesmaid',name:'Emily Thompson',phone:'+1 555-0202',email:'emily@email.com',attire:'Sage green gown',notes:''},
+    {id:uid(),role:'Bridesmaid',name:'Lisa Garcia',phone:'+1 555-0203',email:'lisa@email.com',attire:'Sage green gown',notes:'Nut allergy'},
+    {id:uid(),role:'Best Man',name:'Robert Davis',phone:'+1 555-0204',email:'robert@email.com',attire:'Black tuxedo',notes:'College roommate'},
+    {id:uid(),role:'Groomsman',name:'Christopher Lee',phone:'+1 555-0205',email:'chris@email.com',attire:'Black tuxedo',notes:''},
+    {id:uid(),role:'Officiant',name:'Rev. Thomas Brown',phone:'+1 555-0206',email:'rev.thomas@email.com',attire:'Formal',notes:''},
+  ]);
+  save(K.music,[
+    {id:uid(),section:'Processional',song:'A Thousand Years',artist:'Christina Perri',type:'play'},
+    {id:uid(),section:'Processional',song:'Canon in D',artist:'Pachelbel',type:'play'},
+    {id:uid(),section:'First Dance',song:'Perfect',artist:'Ed Sheeran',type:'play'},
+    {id:uid(),section:'Reception',song:'Uptown Funk',artist:'Bruno Mars',type:'play'},
+    {id:uid(),section:'Reception',song:'Happy',artist:'Pharrell Williams',type:'play'},
+    {id:uid(),section:'Reception',song:'Can\'t Stop the Feeling',artist:'Justin Timberlake',type:'play'},
+    {id:uid(),section:'Last Dance',song:'Don\'t Want to Miss a Thing',artist:'Aerosmith',type:'play'},
+    {id:uid(),section:'Do Not Play',song:'YMCA',artist:'Village People',type:'donotplay'},
+  ]);
+  save(K.gifts,[
+    {id:uid(),giver:'Michael & Susan Johnson',gift:'Kitchen stand mixer',value:350,thankyou:true,notes:'From registry'},
+    {id:uid(),giver:'David & Rachel Wilson',gift:'Cash envelope',value:200,thankyou:false,notes:''},
+    {id:uid(),giver:'The Anderson Family',gift:'Honeymoon fund contribution',value:500,thankyou:true,notes:''},
+    {id:uid(),giver:'Emily Thompson',gift:'Linen set from registry',value:180,thankyou:false,notes:''},
+    {id:uid(),giver:'Aunt Linda & Uncle Bob',gift:'Crystal vase',value:120,thankyou:false,notes:'Beautiful!'},
+  ]);
+  save(K.honeymoon,{destination:'Bali, Indonesia',startDate:fdate(187),endDate:fdate(197),budget:4000,expenses:[
+    {id:uid(),category:'Flights',description:'Round trip x2',amount:1400},
+    {id:uid(),category:'Hotel',description:'Villa Seminyak – 10 nights',amount:1200},
+    {id:uid(),category:'Activities',description:'Rice terrace tour + spa',amount:200},
+  ]});
+  save(K.contacts,[
+    {id:uid(),name:'John Smith',role:'Venue Coordinator',phone:'+1 555-0101',email:'events@grandmanor.com',notes:'Main point of contact'},
+    {id:uid(),name:'Emma Ray',role:'Photographer',phone:'+1 555-0102',email:'emma@emmaray.com',notes:''},
+    {id:uid(),name:'DJ Marcus',role:'Music / DJ',phone:'+1 555-0104',email:'marcus@beats.com',notes:''},
+    {id:uid(),name:'Maria Garcia',role:'Florist',phone:'+1 555-0103',email:'hello@bloomandpetal.com',notes:'Delivery the day before at 10am'},
+    {id:uid(),name:'Chef Antonio',role:'Caterer',phone:'+1 555-0105',email:'info@harvesttable.com',notes:'Final count due 2 weeks before'},
+  ]);
+  save(K.seating,{tables:[
+    {id:'t1',name:'Head Table',seats:['g1','g2','g8','g5',null,null]},
+    {id:'t2',name:'Table 2',seats:['g3','g7','g10',null,null,null,null,null]},
+    {id:'t3',name:'Table 3',seats:[null,null,null,null,null,null,null,null]},
+  ]});
+  save(K.emergency,{venueAddress:'Grand Manor Ballroom, 123 Oak Street, New York, NY 10001',emergencyContact:'John (Venue): +1 555-0101',coordinator:'Jennifer White: +1 555-0200',photographer:'Emma Ray: +1 555-0102',caterer:'Chef Antonio: +1 555-0105',dj:'DJ Marcus: +1 555-0104',transport:'Prestige Cars: +1 555-0300',notes:'Rings are in the bridal suite safe. Marriage licence signed and in the blue folder. Emergency kit is in Suite 204.',licenseReady:true,ringsReady:false,emergencyKitReady:true});
+  updateSidebar();renderPage();
+}
+
+// ═══════════════════════════════════════════════════════
+// CLEAR / RESET
+// ═══════════════════════════════════════════════════════
+function clearData(...keys){
+  confirm2('Clear this data?','This permanently removes all records in this section. This cannot be undone.',()=>{
+    keys.forEach(k=>{
+      const fullKey=K[k]||k;
+      localStorage.removeItem(fullKey);
+    });
+    renderPage();
+    toast('Data cleared','ok');
+  },'Clear');
+}
+
+function resetAll(){
+  confirm2('Reset Everything?','ALL wedding planner data will be permanently deleted. The planner will restart from scratch.',()=>{
+    Object.values(K).forEach(k=>localStorage.removeItem(k));
+    toast('Resetting…','inf');
+    setTimeout(()=>location.reload(),1200);
+  },'Reset Everything');
+}
+
+// ═══════════════════════════════════════════════════════
+// EXPORT / IMPORT
+// ═══════════════════════════════════════════════════════
+function doExport(){
+  const s=getSettings();
+  const backup={};
+  Object.values(K).forEach(k=>{const v=localStorage.getItem(k);if(v)try{backup[k]=JSON.parse(v);}catch(e){console.warn('Skip key in export:',k);}});
+  const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  const n=(s.name1&&s.name2)?`${s.name1.replace(/[^a-zA-Z0-9]/g,'-')}-${s.name2.replace(/[^a-zA-Z0-9]/g,'-')}`:'wedding';
+  a.download=`${n}-planner-backup.json`;
+  a.click();
+  toast('Backup downloaded!','ok');
+}
+
+function doImport(e){
+  const file=e.target.files[0];if(!file)return;
+  if(!file.name.endsWith('.json')){toast('Please select a .json backup file','err');return;}
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      if(typeof d!=='object'||Array.isArray(d)||d===null){toast('Invalid backup — file structure not recognised','err');return;}
+      const validKeys=new Set(Object.values(K));
+      let imported=0;
+      Object.entries(d).forEach(([k,v])=>{
+        if(validKeys.has(k)){
+          try{localStorage.setItem(k,JSON.stringify(v));imported++;}catch(e2){console.warn('Skip key',k,e2);}
+        }
+      });
+      if(imported===0){toast('No valid data found in this backup file','err');return;}
+      updateSidebar();renderPage();toast(`Imported successfully (${imported} sections restored)!`,'ok');
+    }catch(err){toast('Could not read the backup file — it may be corrupted or in the wrong format','err');console.error('Import error:',err);}
+  };
+  reader.readAsText(file);e.target.value='';
+}
+
+// ═══════════════════════════════════════════════════════
+// SETTINGS FORM
+// ═══════════════════════════════════════════════════════
+function loadSettingsForm(){
+  const s=getSettings();
+  buildCurrSelect('scur');
+  document.getElementById('sn1').value=s.name1||'';
+  document.getElementById('sn2').value=s.name2||'';
+  document.getElementById('sdt').value=s.date||'';
+  document.getElementById('scur').value=s.currency||'USD';
+  const total=Object.values(K).reduce((a,k)=>{const v=localStorage.getItem(k);return a+(v?v.length:0);},0);
+  document.getElementById('storageInfo').textContent=`Storage used: ~${(total/1024).toFixed(1)} KB`;
+}
+function saveSettings(){
+  save(K.settings,{name1:document.getElementById('sn1').value.trim(),name2:document.getElementById('sn2').value.trim(),date:document.getElementById('sdt').value,currency:document.getElementById('scur').value});
+  updateSidebar();toast('Settings saved','ok');
+}
+
+// ═══════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════
+function renderDashboard(){
+  const s=getSettings();
+  const guests=load(K.guests,[]);
+  const budget=load(K.budget,[]);
+  const bTotal=load(K.budgetTotal,0);
+  const tasks=load(K.tasks,[]);
+  const vendors=load(K.vendors,[]);
+  const days=getDays();
+  const isDemo=localStorage.getItem(K.isDemo)==='yes';
+
+  // Demo banner
+  const banner=document.getElementById('demoBanner');
+  banner.innerHTML=isDemo?`<div class="demo-banner">✨ <strong>Demo mode:</strong> All sample data is fully editable and deletable. <button class="btn btn-secondary btn-sm" style="margin-left:8px" onclick="confirm2('Clear demo data?','All data will be removed and the planner restarted.',()=>{Object.values(K).forEach(k=>localStorage.removeItem(k));location.reload();},'Clear & Restart')">Clear Demo</button></div>`:'';
+
+  // Stats
+  const attending=guests.filter(g=>g.rsvp==='attending').length;
+  const totalPaid=budget.reduce((a,c)=>a+(Number(c.paid)||0),0);
+  const totalBgt=budget.reduce((a,c)=>a+(Number(c.budgeted)||0),0);
+  const overall=bTotal||totalBgt;
+  const doneTasks=tasks.filter(t=>t.done).length;
+
+  document.getElementById('dashStats').innerHTML=`
+    <div class="sc"><div class="sc-label">Days to Wedding</div><div class="sc-val">${days===null?'—':days<0?'🎉':days}</div><div class="sc-sub">${s.date?new Date(s.date+'T00:00:00').toLocaleDateString('en',{month:'long',day:'numeric',year:'numeric'}):'Date not set'}</div></div>
+    <div class="sc"><div class="sc-label">Confirmed Guests</div><div class="sc-val">${attending}</div><div class="sc-sub">of ${guests.length} invited</div></div>
+    <div class="sc"><div class="sc-label">Budget Spent</div><div class="sc-val">${fmt(totalPaid)}</div><div class="sc-sub">of ${fmt(overall)} total</div></div>
+    <div class="sc"><div class="sc-label">Tasks Done</div><div class="sc-val">${doneTasks}</div><div class="sc-sub">of ${tasks.length} total</div></div>
+  `;
+
+  // Tasks card
+  const pending=tasks.filter(t=>!t.done).slice(0,5);
+  document.getElementById('dashTasks').innerHTML=`
+    <div class="card-hdr"><div class="card-title">Upcoming Tasks</div><button class="btn btn-secondary btn-sm" onclick="nav('timeline')">View All</button></div>
+    ${pending.length?pending.map(t=>`<div class="task-row"><input type="checkbox" class="task-cb" onchange="toggleTask('${t.id}',this.checked)"><div class="task-info"><div class="task-name">${escapeHTML(t.name)}</div><div class="task-meta"><span>${t.tf}</span>${t.dueDate?`<span>Due ${t.dueDate}</span>`:''}</div></div></div>`).join(''):'<div class="empty" style="padding:20px"><span>✅ All tasks complete!</span></div>'}
+  `;
+
+  // Budget card
+  const rem=overall-totalPaid;
+  const rawPct=overall>0?(totalPaid/overall)*100:0;
+  const dispPct=Math.min(100,rawPct);
+  const isOverBudget=rawPct>100;
+  document.getElementById('dashBudget').innerHTML=`
+    <div class="card-hdr"><div class="card-title">Budget Summary</div><button class="btn btn-secondary btn-sm" onclick="nav('budget')">Details</button></div>
+    <div style="margin-bottom:10px">
+      <div class="flex jc-b sm mb12"><span>Spent: <strong>${fmt(totalPaid)}</strong></span><span class="muted">Budget: ${fmt(overall)}</span></div>
+      <div class="prog"><div class="prog-fill ${isOverBudget?'over':''}" style="width:${dispPct}%"></div></div>
+      ${isOverBudget
+        ? `<div class="over-budget-badge mt8">⚠️ Over Budget by ${fmt(Math.abs(rem))}</div>`
+        : `<div class="muted sm mt8">${fmt(rem)} remaining · ${rawPct.toFixed(0)}% used</div>`
+      }
+    </div>
+  `;
+
+  // Guest card
+  const declined=guests.filter(g=>g.rsvp==='declined').length;
+  const pendingG=guests.filter(g=>g.rsvp==='pending').length;
+  document.getElementById('dashGuests').innerHTML=`
+    <div class="card-hdr"><div class="card-title">Guest Overview</div><button class="btn btn-secondary btn-sm" onclick="nav('guests')">Manage</button></div>
+    <div class="g3" style="text-align:center;margin-bottom:12px">
+      <div><div style="font-size:1.4rem;font-weight:800;color:#2e7d32">${attending}</div><div class="muted sm">Attending</div></div>
+      <div><div style="font-size:1.4rem;font-weight:800;color:#c62828">${declined}</div><div class="muted sm">Declined</div></div>
+      <div><div style="font-size:1.4rem;font-weight:800;color:#e65100">${pendingG}</div><div class="muted sm">Pending</div></div>
+    </div>
+    <div class="prog"><div class="prog-fill" style="width:${guests.length?((attending+declined)/guests.length)*100:0}%"></div></div>
+    <div class="muted sm mt8">${guests.length?(((attending+declined)/guests.length)*100).toFixed(0):0}% response rate (${attending+declined} of ${guests.length} responded)</div>
+    ${(()=>{const meals={};guests.filter(g=>g.rsvp==='attending'&&g.meal).forEach(g=>{const m=g.meal.trim();if(m)meals[m]=(meals[m]||0)+1;});const top=Object.entries(meals).sort((a,b)=>b[1]-a[1]).slice(0,3);return top.length?`<div class="muted sm mt8">🍽️ ${top.map(([m,c])=>m+': '+c).join(' · ')}</div>`:'';})()} 
+  `;
+
+  // Vendors card
+  document.getElementById('dashVendors').innerHTML=`
+    <div class="card-hdr"><div class="card-title">Vendors</div><button class="btn btn-secondary btn-sm" onclick="nav('vendors')">Manage</button></div>
+    ${vendors.slice(0,5).map(v=>`<div class="flex jc-b items-c" style="padding:7px 0;border-bottom:1px solid var(--border);font-size:.82rem"><div><div style="font-weight:600">${escapeHTML(v.name)}</div><div class="muted sm">${escapeHTML(v.category)}</div></div><div style="text-align:right"><div style="font-weight:700">${fmt(v.amount)}</div><div class="muted sm">${fmt(v.paid)} paid</div></div></div>`).join('')}
+    ${vendors.length===0?'<div class="empty" style="padding:16px"><span>No vendors added yet</span></div>':''}
+    ${vendors.length>0?`<div class="flex jc-b" style="padding:7px 0;border-top:1px solid var(--border);font-size:.82rem;font-weight:700;margin-top:6px"><div>Total Vendors: ${vendors.length}</div><div>${fmt(vendors.reduce((a,v)=>a+(Number(v.amount)||0),0))} contracted</div></div>`:''}
+  `;
+}
+
+// ═══════════════════════════════════════════════════════
+// BUDGET
+// ═══════════════════════════════════════════════════════
+function renderBudget(){
+  const cats=load(K.budget,[]);
+  const bTotal=load(K.budgetTotal,0);
+  const totalBudgeted=cats.reduce((a,c)=>a+(Number(c.budgeted)||0),0);
+  const totalPaid=cats.reduce((a,c)=>a+(Number(c.paid)||0),0);
+  const totalDue=cats.reduce((a,c)=>a+(Number(c.due)||0),0);
+  const overall=bTotal||totalBudgeted;
+  const rem=overall-totalPaid;
+  const rawPct2=overall>0?(totalPaid/overall)*100:0;
+  const pct=Math.min(100,rawPct2);
+  const isOver=rawPct2>100;
+
+  document.getElementById('budgetHdr').textContent=`${fmt(totalPaid)} spent of ${fmt(overall)}${isOver?' — ⚠️ OVER BUDGET':''}`;
+  document.getElementById('budgetOverview').innerHTML=`
+    <div style="margin-bottom:16px"><div style="font-size:2rem;font-weight:800;color:var(--primary-dark)">${fmt(overall)}</div><div class="muted sm">Total Budget</div></div>
+    <div class="g3" style="margin-bottom:14px;text-align:center">
+      <div><div style="font-size:1.2rem;font-weight:700;color:#2e7d32">${fmt(totalPaid)}</div><div class="muted sm">Paid</div></div>
+      <div><div style="font-size:1.2rem;font-weight:700;color:#e65100">${fmt(totalDue)}</div><div class="muted sm">Due</div></div>
+      <div><div style="font-size:1.2rem;font-weight:700;color:${isOver?'var(--danger)':'var(--primary-dark)'}">${isOver?'−'+fmt(Math.abs(rem)):fmt(rem)}</div><div class="muted sm">${isOver?'<b style="color:var(--danger)">Over Budget</b>':'Remaining'}</div></div>
+    </div>
+    <div class="prog" style="height:10px"><div class="prog-fill ${isOver?'over':''}" style="width:${pct}%"></div></div>
+    ${isOver
+      ? `<div class="over-budget-badge mt8">⚠️ Over Budget by ${fmt(Math.abs(rem))} (${rawPct2.toFixed(0)}% of budget used)</div>`
+      : `<div class="muted sm mt8">${rawPct2.toFixed(0)}% of budget spent</div>`
+    }
+  `;
+
+  // Donut
+  const chartEl=document.getElementById('budgetChart');
+  if(cats.length>0){
+    const total=totalBudgeted||1;
+    let off=0;const r=42,cx=55,cy=55,C=2*Math.PI*r;
+    let paths='',legend='';
+    cats.forEach((c,i)=>{
+      const p=(Number(c.budgeted)||0)/total;const dash=p*C;const col=CHART_COLORS[i%CHART_COLORS.length];
+      paths+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${col}" stroke-width="16" stroke-dasharray="${dash} ${C-dash}" stroke-dashoffset="${-off*C}"/>`;
+      off+=p;
+      if(c.budgeted>0)legend+=`<div class="leg-item"><span class="dot" style="background:${col}"></span>${escapeHTML(c.name)}</div>`;
+    });
+    chartEl.innerHTML=`<div class="donut-wrap"><svg width="110" height="110" viewBox="0 0 110 110"><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--border)" stroke-width="16"/>${paths}</svg><div class="donut-center"><div class="dv">${pct.toFixed(0)}%</div><div class="dl">spent</div></div></div><div class="legend">${legend}</div>`;
+  }else{chartEl.innerHTML='<div class="muted sm">Add categories to see chart</div>';}
+
+  // List
+  const el=document.getElementById('budgetList');
+  el.innerHTML=cats.length===0?`<div class="empty"><span class="empty-ico">💰</span><h3>No budget categories yet</h3><p>Add categories to track your wedding spending</p><button class="btn btn-primary" onclick="openBudgetCat()">+ Add Category</button></div>`:
+    cats.map(c=>`
+      <div class="bgt-row">
+        <div><div style="font-weight:600;font-size:.875rem">${escapeHTML(c.name)}</div>${c.notes?`<div class="muted sm">${escapeHTML(c.notes)}</div>`:''}</div>
+        <div class="sm">${fmt(c.budgeted)}</div>
+        <div class="sm" style="color:#2e7d32">${fmt(c.paid)}</div>
+        <div class="sm" style="color:#e65100">${fmt(c.due)}</div>
+        <div class="muted sm">${c.dueDate||'—'}</div>
+        <div class="flex gap6"><button class="bic" onclick="openBudgetCat('${c.id}')">✏️</button><button class="bic d" onclick="delBudgetCat('${c.id}')">🗑️</button></div>
+      </div>`).join('');
+
+  document.getElementById('budgetTotals').innerHTML=cats.length>0?`<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 72px;gap:6px;padding:10px 12px;background:var(--bg);border-radius:8px;margin-top:8px;font-weight:700;font-size:.875rem"><div>Total</div><div>${fmt(totalBudgeted)}</div><div style="color:#2e7d32">${fmt(totalPaid)}</div><div style="color:#e65100">${fmt(totalDue)}</div><div></div><div></div></div>`:'';
+}
+
+function openBudgetCat(id=''){
+  const cats=load(K.budget,[]);const c=id?cats.find(x=>x.id===id):null;
+  openModal(`<div class="modal-hdr"><div class="modal-title">${c?'Edit Category':'Add Budget Category'}</div><button class="bic" onclick="closeModal()">✕</button></div>
+    <div class="fg"><label>Category Name *</label><input type="text" id="bc-n" value="${escapeHTML(c?.name||'')}" placeholder="e.g. Venue, Photography"></div>
+    <div class="fr"><div class="fg"><label>Budgeted (${getCurrSym()})</label><input type="number" id="bc-b" value="${escapeHTML(c?.budgeted||'')}" min="0"></div><div class="fg"><label>Paid (${getCurrSym()})</label><input type="number" id="bc-p" value="${escapeHTML(c?.paid||'')}" min="0"></div></div>
+    <div class="fr"><div class="fg"><label>Due (${getCurrSym()})</label><input type="number" id="bc-d" value="${escapeHTML(c?.due||'')}" min="0"></div><div class="fg"><label>Due Date</label><input type="date" id="bc-dd" value="${escapeHTML(c?.dueDate||'')}"></div></div>
+    <div class="fg"><label>Notes</label><input type="text" id="bc-nt" value="${escapeHTML(c?.notes||'')}" placeholder="Optional notes"></div>
+    <div class="modal-ftr"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveBudgetCat('${id}')">Save</button></div>`);
+}
+function saveBudgetCat(id){
+  const cats=load(K.budget,[]);
+  const d={name:document.getElementById('bc-n').value.trim(),budgeted:+document.getElementById('bc-b').value||0,paid:+document.getElementById('bc-p').value||0,due:+document.getElementById('bc-d').value||0,dueDate:document.getElementById('bc-dd').value,notes:document.getElementById('bc-nt').value.trim()};
+  if(!d.name){toast('Category name is required','err');return;}
+  if(id){const i=cats.findIndex(c=>c.id===id);if(i>=0)cats[i]={...cats[i],...d};}else{cats.push({id:uid(),...d});}
+  save(K.budget,cats);closeModal();renderBudget();toast('Category saved','ok');
+}
+function delBudgetCat(id){confirm2('Delete category?','This permanently removes this budget category.',()=>{save(K.budget,load(K.budget,[]).filter(c=>c.id!==id));renderBudget();toast('Deleted','ok');});}
+
+function editTotalBudget(){
+  const cur=load(K.budgetTotal,0);
+  openModal(`<div class="modal-hdr"><div class="modal-title">Set Total Budget</div><button class="bic" onclick="closeModal()">✕</button></div>
+    <div class="fg"><label>Total Wedding Budget (${getCurrSym()})</label><input type="number" id="tbl" value="${cur}" min="0" placeholder="e.g. 25000"></div>
+    <div class="modal-ftr"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="save(K.budgetTotal,+document.getElementById('tbl').value||0);closeModal();renderBudget();toast('Budget updated','ok')">Save</button></div>`);
+}
+
+// ═══════════════════════════════════════════════════════
+// GUESTS
+// ═══════════════════════════════════════════════════════
+function renderGuests(){
+  let guests=load(K.guests,[]);
+  const all=[...guests];
+  if(gFilter.text)guests=guests.filter(g=>g.name.toLowerCase().includes(gFilter.text.toLowerCase())||(g.address||'').toLowerCase().includes(gFilter.text.toLowerCase()));
+  if(gFilter.rsvp)guests=guests.filter(g=>g.rsvp===gFilter.rsvp);
+  if(gFilter.side)guests=guests.filter(g=>g.side===gFilter.side);
+
+  const att=all.filter(g=>g.rsvp==='attending').length;
+  const dec=all.filter(g=>g.rsvp==='declined').length;
+  const pen=all.filter(g=>g.rsvp==='pending').length;
+  const responseRate=all.length?(((att+dec)/all.length)*100).toFixed(0):0;
+  document.getElementById('guestStats').innerHTML=`
+    <div class="sc"><div class="sc-label">Total Invited</div><div class="sc-val">${all.length}</div></div>
+    <div class="sc"><div class="sc-label">Attending</div><div class="sc-val" style="color:#2e7d32">${att}</div></div>
+    <div class="sc"><div class="sc-label">Declined</div><div class="sc-val" style="color:#c62828">${dec}</div></div>
+    <div class="sc"><div class="sc-label">Response Rate</div><div class="sc-val">${responseRate}%</div><div class="sc-sub">${att+dec} of ${all.length} responded</div></div>`;
+
+  const tbody=document.getElementById('guestTbody');
+  const emEl=document.getElementById('guestEmpty');
+  const tblW=document.querySelector('#page-guests .tbl-wrap');
+  if(guests.length===0){
+    tbody.innerHTML='';tblW&&(tblW.style.display='none');emEl.style.display='block';
+    emEl.innerHTML=`<div class="empty"><span class="empty-ico">👥</span><h3>No guests yet</h3><p>Add your first guest to start building your list</p><button class="btn btn-primary" onclick="openGuest()">+ Add Guest</button></div>`;
+    return;
+  }
+  tblW&&(tblW.style.display='');emEl.style.display='none';
+  const rb={attending:'bg-green',declined:'bg-red',pending:'bg-yellow'};
+  tbody.innerHTML=guests.map(g=>`<tr>
+    <td><div style="font-weight:600">${escapeHTML(g.name)}</div>${g.dietary?`<div class="muted sm">⚠️ ${escapeHTML(g.dietary)}</div>`:''}</td>
+    <td>${escapeHTML(g.side||'—')}</td>
+    <td><span class="badge ${rb[g.rsvp]||'bg-gray'}">${escapeHTML(g.rsvp||'pending')}</span></td>
+    <td class="sm">${escapeHTML(g.meal||'—')}</td>
+    <td class="sm">${escapeHTML(g.dietary||'—')}</td>
+    <td>${g.saveDate?'✅':'—'}</td>
+    <td>${g.inviteSent?'✅':'—'}</td>
+    <td>${g.giftRcvd?'🎁':'—'}</td>
+    <td><div class="flex gap6"><button class="bic" onclick="openGuest('${g.id}')">✏️</button><button class="bic d" onclick="delGuest('${g.id}')">🗑️</button></div></td>
+  </tr>`).join('');
+  // Render meal summary
+  renderGuestMealSummary(all);
+}
+
+function renderGuestMealSummary(guestList){
+  const card=document.getElementById('mealSummaryCard');
+  if(!card)return;
+  const attending=guestList.filter(g=>g.rsvp==='attending');
+  if(attending.length===0){card.innerHTML='';card.style.display='none';return;}
+  card.style.display='block';
+  // Meal counts
+  const meals={};
+  attending.forEach(g=>{if(g.meal&&g.meal.trim()){const m=g.meal.trim();meals[m]=(meals[m]||0)+1;}});
+  // Dietary counts
+  const diets={};
+  attending.forEach(g=>{if(g.dietary&&g.dietary.trim()){const d=g.dietary.trim();diets[d]=(diets[d]||0)+1;}});
+  let html=`<div class="card-hdr"><div class="card-title">🍽️ Meal & Dietary Summary</div><div class="muted sm">${attending.length} confirmed guests</div></div>`;
+  if(Object.keys(meals).length>0){
+    html+=`<div style="margin-bottom:12px"><div style="font-weight:600;font-size:.85rem;margin-bottom:6px">Meal Choices</div><div class="meal-grid">`;
+    Object.entries(meals).sort((a,b)=>b[1]-a[1]).forEach(([m,c])=>{
+      html+=`<div class="meal-chip"><div class="meal-count">${c}</div><div class="meal-name">${escapeHTML(m)}</div></div>`;
+    });
+    const noMeal=attending.filter(g=>!g.meal||!g.meal.trim()).length;
+    if(noMeal>0)html+=`<div class="meal-chip"><div class="meal-count" style="color:var(--muted)">${noMeal}</div><div class="meal-name">Not specified</div></div>`;
+    html+=`</div></div>`;
+  }
+  if(Object.keys(diets).length>0){
+    html+=`<div><div style="font-weight:600;font-size:.85rem;margin-bottom:6px">Dietary Restrictions</div><div class="meal-grid">`;
+    Object.entries(diets).sort((a,b)=>b[1]-a[1]).forEach(([d,c])=>{
+      html+=`<div class="meal-chip" style="background:#fff8e1;border-color:#ffe082"><div class="meal-count" style="color:#e65100">${c}</div><div class="meal-name">${escapeHTML(d)}</div></div>`;
+    });
+    html+=`</div></div>`;
+  }
+  if(Object.keys(meals).length===0&&Object.keys(diets).length===0){
+    html+=`<div class="muted sm">No meal choices or dietary restrictions recorded yet.</div>`;
+  }
+  card.innerHTML=html;
+}
+
+function openGuest(id=''){
+  const guests=load(K.guests,[]);const g=id?guests.find(x=>x.id===id):null;
+  openModal(`<div class="modal-hdr"><div class="modal-title">${g?'Edit Guest':'Add Guest'}</div><button class="bic" onclick="closeModal()">✕</button></div>
+    <div class="fr"><div class="fg"><label>Full Name *</label><input type="text" id="g-n" value="${escapeHTML(g?.name||'')}" placeholder="Guest full name"></div><div class="fg"><label>Side</label><select id="g-s"><option ${(g?.side||'')===''?'selected':''} value="">Select</option><option ${(g?.side||'')==='Bride'?'selected':''}>Bride</option><option ${(g?.side||'')==='Groom'?'selected':''}>Groom</option><option ${(g?.side||'')==='Mutual'?'selected':''}>Mutual</option></select></div></div>
+    <div class="fr"><div class="fg"><label>RSVP</label><select id="g-r"><option value="pending" ${(g?.rsvp||'pending')==='pending'?'selected':''}>Pending</option><option value="attending" ${g?.rsvp==='attending'?'selected':''}>Attending</option><option value="declined" ${g?.rsvp==='declined'?'selected':''}>Declined</option></select></div><div class="fg"><label>Meal Choice</label><input type="text" id="g-m" value="${escapeHTML(g?.meal||'')}" placeholder="Chicken, Fish, Vegetarian…"></div></div>
+    <div class="fr"><div class="fg"><label>Dietary Restrictions</label><input type="text" id="g-dt" value="${escapeHTML(g?.dietary||'')}" placeholder="Gluten-free, Nut allergy…"></div><div class="fg"><label>Address</label><input type="text" id="g-a" value="${escapeHTML(g?.address||'')}" placeholder="Mailing address"></div></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px">
+      <div class="fg-cb"><label><input type="checkbox" id="g-sd" ${g?.saveDate?'checked':''}> Save Date Sent</label></div>
+      <div class="fg-cb"><label><input type="checkbox" id="g-in" ${g?.inviteSent?'checked':''}> Invite Sent</label></div>
+      <div class="fg-cb"><label><input type="checkbox" id="g-gr" ${g?.giftRcvd?'checked':''}> Gift Received</label></div>
+    </div>
+    <div class="fg"><label>Notes</label><textarea id="g-nt" rows="2" placeholder="Any additional notes">${escapeHTML(g?.notes||'')}</textarea></div>
+    <div class="modal-ftr"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveGuest('${id}')">Save Guest</button></div>`);
+}
+function saveGuest(id){
+  const guests=load(K.guests,[]);
+  const d={name:document.getElementById('g-n').value.trim(),side:document.getElementById('g-s').value,rsvp:document.getElementById('g-r').value,meal:document.getElementById('g-m').value.trim(),dietary:document.getElementById('g-dt').value.trim(),address:document.getElementById('g-a').value.trim(),saveDate:document.getElementById('g-sd').checked,inviteSent:document.getElementById('g-in').checked,giftRcvd:document.getElementById('g-gr').checked,notes:document.getElementById('g-nt').value.trim()};
+  if(!d.name){toast('Name is required','err');return;}
+  if(id){const i=guests.findIndex(g=>g.id===id);if(i>=0)guests[i]={...guests[i],...d};}else{guests.push({id:uid(),...d});}
+  save(K.guests,guests);closeModal();renderGuests();toast('Guest saved','ok');
+}
+function delGuest(id){const guests=load(K.guests,[]);const g=guests.find(x=>x.id===id);confirm2(`Remove ${g?escapeHTML(g.name):'this guest'}?`,'This guest will be permanently removed.',()=>{save(K.guests,guests.filter(x=>x.id!==id));renderGuests();toast('Guest removed','ok');});}
+
+// ═══════════════════════════════════════════════════════
+// SEATING
+// ═══════════════════════════════════════════════════════
+function renderSeating(){
+  const guests=load(K.guests,[]).filter(g=>g.rsvp==='attending');
+  const seating=load(K.seating,{tables:[]});
+  const assignedIds=new Set(seating.tables.flatMap(t=>t.seats.filter(Boolean)));
+  const unassigned=guests.filter(g=>!assignedIds.has(g.id));
+  const totalSeats=seating.tables.reduce((a,t)=>a+t.seats.length,0);
+  const filled=seating.tables.reduce((a,t)=>a+t.seats.filter(Boolean).length,0);
+  document.getElementById('seatStats').textContent=`${filled}/${totalSeats} seats filled · ${unassigned.length} unassigned attending guests`;
+  const isMobile=window.innerWidth<=768;
+  const mHint=document.getElementById('mobileSeatingHint');
+  if(mHint)mHint.style.display=isMobile&&unassigned.length>0?'block':'none';
+  document.getElementById('unassigned').innerHTML=unassigned.length>0
+    ?unassigned.map(g=>`<div class="chip" draggable="true" data-gid="${g.id}" ondragstart="event.dataTransfer.setData('gid','${g.id}')">${escapeHTML(g.name)} ${isMobile?`<button class="bic" style="font-size:.7rem;padding:1px 4px;margin-left:3px" onclick="openMobileAssign('${g.id}')">🪑</button>`:''}</div>`).join('')
+    :'<div class="muted sm">All attending guests seated ✅</div>';
+  const gMap={};load(K.guests,[]).forEach(g=>{gMap[g.id]=g;});
+  const tablesEl=document.getElementById('seatTables');
+  if(seating.tables.length===0){
+    tablesEl.innerHTML=`<div class="empty"><span class="empty-ico">🪑</span><h3>No tables yet</h3><p>Add a table to start building your seating plan</p><button class="btn btn-primary" onclick="openTable()">+ Add Table</button></div>`;return;
+  }
+  tablesEl.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px">`+seating.tables.map(t=>`
+    <div class="s-table">
+      <div class="flex jc-b items-c mb12">
+        <div class="s-table-name">${escapeHTML(t.name)}</div>
+        <div class="flex gap6"><button class="bic" onclick="openTable('${t.id}')">✏️</button><button class="bic d" onclick="delTable('${t.id}')">🗑️</button></div>
+      </div>
+      <div class="muted sm" style="margin-bottom:6px">${t.seats.filter(Boolean).length}/${t.seats.length} seated</div>
+      ${t.seats.map((sid,i)=>{const gu=sid?gMap[sid]:null;return`<div class="seat ${gu?'filled':''}" ondragover="event.preventDefault()" ondrop="dropSeat(event,'${t.id}',${i})">${gu?`<span style="font-size:.78rem">${escapeHTML(gu.name)}</span><button class="bic" style="padding:1px;font-size:.7rem" onclick="removeSeat('${t.id}',${i})">✕</button>`:'<span class="muted" style="font-size:.72rem">Empty seat</span>'}</div>`;}).join('')}
+    </div>`).join('')+'</div>';
+}
+function dropSeat(e,tableId,seatIdx){
+  e.preventDefault();const gid=e.dataTransfer.getData('gid');
+  const seating=load(K.seating,{tables:[]});
+  seating.tables.forEach(t=>{t.seats=t.seats.map(s=>s===gid?null:s);});
+  const t=seating.tables.find(x=>x.id===tableId);
+  if(t&&(t.seats[seatIdx]===null||t.seats[seatIdx]===undefined)){t.seats[seatIdx]=gid;}else{toast('That seat is taken','err');return;}
+  save(K.seating,seating);renderSeating();toast('Guest seated!','ok');
+}
+function removeSeat(tableId,seatIdx){
+  const seating=load(K.seating,{tables:[]});
+  const t=seating.tables.find(x=>x.id===tableId);
+  if(t)t.seats[seatIdx]=null;
+  save(K.seating,seating);renderSeating();
+}
+function openTable(id=''){
+  const seating=load(K.seating,{tables:[]});const t=id?seating.tables.find(x=>x.id===id):null;
+  openModal(`<div class="modal-hdr"><div class="modal-title">${t?'Edit Table':'Add Table'}</div><button class="bic" onclick="closeModal()">✕</button></div>
+    <div class="fr"><div class="fg"><label>Table Name *</label><input type="text" id="tb-n" value="${escapeHTML(t?.name||'')}" placeholder="e.g. Head Table, Table 1"></div><div class="fg"><label>Number of Seats</label><input type="number" id="tb-s" value="${t?.seats?.length||8}" min="1" max="30"></div></div>
+    <div class="modal-ftr"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveTable('${id}')">Save Table</button></div>`);
+}
+function saveTable(id){
+  const seating=load(K.seating,{tables:[]});
+  const name=document.getElementById('tb-n').value.trim();const seats=parseInt(document.getElementById('tb-s').value)||8;
+  if(!name){toast('Table name required','err');return;}
+  if(id){const i=seating.tables.findIndex(t=>t.id===id);if(i>=0){const ex=seating.tables[i].seats;seating.tables[i]={...seating.tables[i],name,seats:Array.from({length:seats},(_,j)=>ex[j]!==undefined?ex[j]:null)};}}
+  else{seating.tables.push({id:uid(),name,seats:Array(seats).fill(null)});}
+  save(K.seating,seating);closeModal();renderSeating();toast('Table saved','ok');
+}
+function delTable(id){confirm2('Delete this table?','Guests will become unassigned.',()=>{const s=load(K.seating,{tables:[]});s.tables=s.tables.filter(t=>t.id!==id);save(K.seating,s);renderSeating();toast('Table deleted','ok');});}
+
+// ═══════════════════════════════════════════════════════
+// VENDORS
+// ═══════════════════════════════════════════════════════
+function renderVendors(){
+  let vendors=load(K.vendors,[]);
+  if(vFilter)vendors=vendors.filter(v=>v.category===vFilter);
+  const el=document.getElementById('vendorList');
+  if(vendors.length===0){el.innerHTML=`<div class="empty"><span class="empty-ico">🤝</span><h3>No vendors added yet</h3><p>Track quotes, contracts, and payments for all your vendors</p><button class="btn btn-primary" onclick="openVendor()">+ Add Vendor</button></div>`;return;}
+  el.innerHTML=vendors.map(v=>{
+    const amt=Number(v.amount)||0;const paid=Number(v.paid)||0;
+    const p=amt>0?Math.min(100,(paid/amt)*100):0;
+    const balance=Math.max(0,amt-paid);
+    const isPaidFull=amt>0&&paid>=amt;
+    return`<div class="vc"><div class="vc-hdr"><div><span class="badge bg-blue">${v.category}</span><div class="vc-name">${escapeHTML(v.name)}</div><div class="vc-sub">${[v.contact,v.phone].filter(x=>x).map(x=>escapeHTML(x)).join(' · ')}</div>${v.email?`<div class="vc-sub">${escapeHTML(v.email)}</div>`:''}</div><div style="text-align:right"><div style="font-size:1.2rem;font-weight:800;color:var(--primary-dark)">${fmt(amt)}</div><div class="muted sm">${fmt(paid)} paid · ${fmt(balance)} due</div><div class="flex gap6" style="margin-top:8px;justify-content:flex-end"><button class="bic" onclick="openVendor('${v.id}')">✏️</button><button class="bic d" onclick="delVendor('${v.id}')">🗑️</button></div></div></div><div class="vendor-status-row">${v.contractSigned?'<span class="vs-chip vs-signed">✔ Contract Signed</span>':'<span class="vs-chip vs-unsigned">⚠ Contract Pending</span>'}${isPaidFull?'<span class="vs-chip vs-paid">✔ Paid in Full</span>':paid>0?`<span class="vs-chip vs-owing">Balance Due: ${fmt(balance)}</span>`:'<span class="vs-chip vs-unsigned">Deposit Not Paid</span>'}</div>${amt>0?`<div class="prog mt8"><div class="prog-fill" style="width:${p}%"></div></div><div class="muted sm mt8">${p.toFixed(0)}% paid${v.dueDate?' · Final payment: '+v.dueDate:''}</div>`:''} ${v.notes?`<div class="muted sm mt8">📝 ${escapeHTML(v.notes)}</div>`:''}</div>`;
+  }).join('');
+}
+function openVendor(id=''){
+  const vendors=load(K.vendors,[]);const v=id?vendors.find(x=>x.id===id):null;
+  openModal(`<div class="modal-hdr"><div class="modal-title">${v?'Edit Vendor':'Add Vendor'}</div><button class="bic" onclick="closeModal()">✕</button></div>
+    <div class="fr"><div class="fg"><label>Vendor Name *</label><input type="text" id="v-n" value="${escapeHTML(v?.name||'')}" placeholder="Business name"></div><div class="fg"><label>Category</label><select id="v-c">${VENDOR_CATS.map(c=>`<option ${v?.category===c?'selected':''}>${c}</option>`).join('')}</select></div></div>
+    <div class="fr"><div class="fg"><label>Contact Person</label><input type="text" id="v-ct" value="${escapeHTML(v?.contact||'')}" placeholder="Name"></div><div class="fg"><label>Phone</label><input type="tel" id="v-ph" value="${escapeHTML(v?.phone||'')}" placeholder="+1 555 0000"></div></div>
+    <div class="fr"><div class="fg"><label>Email</label><input type="email" id="v-em" value="${escapeHTML(v?.email||'')}" placeholder="email@example.com"></div><div class="fg"><label>Website</label><input type="text" id="v-wb" value="${escapeHTML(v?.website||'')}" placeholder="website.com"></div></div>
+    <div class="fr"><div class="fg"><label>Contract / Quote Amount (${getCurrSym()})</label><input type="number" id="v-am" value="${escapeHTML(v?.amount||'')}" min="0" placeholder="Total agreed price"></div><div class="fg"><label>Deposit Paid (${getCurrSym()})</label><input type="number" id="v-dp" value="${escapeHTML(v?.deposit||'')}" min="0" placeholder="0"></div></div>
+    <div class="fr"><div class="fg"><label>Total Paid So Far (${getCurrSym()})</label><input type="number" id="v-pa" value="${escapeHTML(v?.paid||'')}" min="0"></div><div class="fg"><label>Final Payment Date</label><input type="date" id="v-dd" value="${escapeHTML(v?.dueDate||'')}"></div></div>
+    <div class="fr"><div class="fg-cb" style="padding-top:8px"><label><input type="checkbox" id="v-cs" ${v?.contractSigned?'checked':''}> Contract Signed</label></div><div class="fg"></div></div>
+    <div class="fg"><label>Notes</label><textarea id="v-nt" rows="2" placeholder="Package details, requirements…">${escapeHTML(v?.notes||'')}</textarea></div>
+    <div class="modal-ftr"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveVendor('${id}')">Save Vendor</button></div>`);
+}
+function saveVendor(id){
+  const vendors=load(K.vendors,[]);
+  const amount=+document.getElementById('v-am').value||0;
+  const paid=+document.getElementById('v-pa').value||0;
+  const d={name:document.getElementById('v-n').value.trim(),category:document.getElementById('v-c').value,contact:document.getElementById('v-ct').value.trim(),phone:document.getElementById('v-ph').value.trim(),email:document.getElementById('v-em').value.trim(),website:document.getElementById('v-wb').value.trim(),amount,deposit:+document.getElementById('v-dp').value||0,paid,balanceDue:Math.max(0,amount-paid),dueDate:document.getElementById('v-dd').value,contractSigned:document.getElementById('v-cs').checked,notes:document.getElementById('v-nt').value.trim()};
+  if(!d.name){toast('Vendor name required','err');return;}
+  if(id){const i=vendors.findIndex(v=>v.id===id);if(i>=0)vendors[i]={...vendors[i],...d};}else{vendors.push({id:uid(),...d});}
+  save(K.vendors,vendors);closeModal();renderVendors();toast('Vendor saved','ok');
+}
+function delVendor(id){const vendors=load(K.vendors,[]);const v=vendors.find(x=>x.id===id);confirm2(`Remove ${v?escapeHTML(v.name):'this vendor'}?`,'This vendor will be permanently removed.',()=>{save(K.vendors,vendors.filter(x=>x.id!==id));renderVendors();toast('Vendor removed','ok');});}
+
+// ═══════════════════════════════════════════════════════
+// TIMELINE
+// ═══════════════════════════════════════════════════════
+function renderTimeline(){
+  let tasks=load(K.tasks,[]);const all=[...tasks];
+  const done=all.filter(t=>t.done).length;const pct=all.length>0?(done/all.length)*100:0;
+  document.getElementById('taskProgress').innerHTML=`<div class="card-hdr"><div class="card-title">Overall Progress</div><div class="muted sm">${done} of ${all.length} complete</div></div><div class="prog" style="height:10px"><div class="prog-fill" style="width:${pct}%"></div></div><div class="muted sm mt8">${pct.toFixed(0)}% complete</div>`;
+  if(tFilter)tasks=tasks.filter(t=>t.tf===tFilter);
+  const grEl=document.getElementById('taskGroups');
+  if(all.length===0){grEl.innerHTML=`<div class="empty"><span class="empty-ico">✅</span><h3>No tasks yet</h3><p>Build your wedding planning timeline</p><button class="btn btn-primary" onclick="openTask()">+ Add Task</button></div>`;return;}
+  grEl.innerHTML=TIMEFRAMES.map(tf=>{const tfs=tasks.filter(t=>t.tf===tf);if(!tfs.length)return'';const tfDone=tfs.filter(t=>t.done).length;return`<div class="card"><div class="card-hdr"><div><div class="card-title">${tf}</div><div class="muted sm">${tfDone}/${tfs.length} done</div></div></div>${tfs.map(t=>`<div class="task-row"><input type="checkbox" class="task-cb" ${t.done?'checked':''} onchange="toggleTask('${t.id}',this.checked)"><div class="task-info"><div class="task-name ${t.done?'done':''}">${escapeHTML(t.name)}</div><div class="task-meta">${t.priority?`<span class="badge ${t.priority==='High'?'bg-red':'bg-yellow'}" style="font-size:.65rem;padding:1px 6px">${t.priority}</span>`:''} ${t.dueDate?`<span>Due ${t.dueDate}</span>`:''} ${t.notes?`<span>${escapeHTML(t.notes)}</span>`:''}</div></div><div class="flex gap6"><button class="bic" onclick="openTask('${t.id}')">✏️</button><button class="bic d" onclick="delTask('${t.id}')">🗑️</button></div></div>`).join('')}</div>`;}).join('');
+}
+function toggleTask(id,checked){
+  const tasks=load(K.tasks,[]);const i=tasks.findIndex(t=>t.id===id);
+  if(i>=0)tasks[i].done=checked;save(K.tasks,tasks);renderTimeline();
+  if(currentPage==='dashboard')renderDashboard();
+  toast(checked?'Task completed! ✅':'Marked pending','ok');
+}
+function openTask(id=''){
+  const tasks=load(K.tasks,[]);const t=id?tasks.find(x=>x.id===id):null;
+  openModal(`<div class="modal-hdr"><div class="modal-title">${t?'Edit Task':'Add Task'}</div><button class="bic" onclick="closeModal()">✕</button></div>
+    <div class="fg"><label>Task Name *</label><input type="text" id="tk-n" value="${escapeHTML(t?.name||'')}" placeholder="What needs to be done?"></div>
+    <div class="fr"><div class="fg"><label>Timeframe</label><select id="tk-tf">${TIMEFRAMES.map(tf=>`<option ${t?.tf===tf?'selected':''}>${tf}</option>`).join('')}</select></div><div class="fg"><label>Priority</label><select id="tk-pr"><option ${t?.priority==='High'?'selected':''}>High</option><option ${t?.priority==='Medium'?'selected':''}>Medium</option><option ${t?.priority==='Low'?'selected':''}>Low</option></select></div></div>
+    <div class="fr"><div class="fg"><label>Due Date (Optional)</label><input type="date" id="tk-dd" value="${escapeHTML(t?.dueDate||'')}"></div><div class="fg"><label>Notes</label><input type="text" id="tk-nt" value="${escapeHTML(t?.notes||'')}" placeholder="Optional"></div></div>
+    <div class="modal-ftr"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveTask('${id}')">Save Task</button></div>`);
+}
+function saveTask(id){
+  const tasks=load(K.tasks,[]);
+  const d={name:document.getElementById('tk-n').value.trim(),tf:document.getElementById('tk-tf').value,priority:document.getElementById('tk-pr').value,dueDate:document.getElementById('tk-dd').value,notes:document.getElementById('tk-nt').value.trim(),done:false};
+  if(!d.name){toast('Task name required','err');return;}
+  if(id){const i=tasks.findIndex(t=>t.id===id);if(i>=0)tasks[i]={...tasks[i],...d,done:tasks[i].done};}else{tasks.push({id:uid(),...d});}
+  save(K.tasks,tasks);closeModal();renderTimeline();toast('Task saved','ok');
+}
+function delTask(id){confirm2('Delete task?','',()=>{save(K.tasks,load(K.tasks,[]).filter(t=>t.id!==id));renderTimeline();toast('Deleted','ok');});}
+
+// ═══════════════════════════════════════════════════════
+// ITINERARY
+// ═══════════════════════════════════════════════════════
+function renderItinerary(){
+  const items=load(K.itinerary,[]).sort((a,b)=>a.time.localeCompare(b.time));
+  const el=document.getElementById('itineraryList');
+  if(items.length===0){el.innerHTML=`<div class="empty"><span class="empty-ico">🗓️</span><h3>No events yet</h3><p>Build your wedding day schedule</p><button class="btn btn-primary" onclick="openItinerary()">+ Add Event</button></div>`;return;}
+  el.innerHTML=items.map(it=>`<div class="it-row"><div class="it-time">${it.time}</div><div class="it-info"><div class="it-title">${escapeHTML(it.event)}</div><div class="it-sub">${[it.person,it.location].filter(Boolean).map(x=>escapeHTML(x)).join(' · ')}</div>${it.notes?`<div class="muted sm">${escapeHTML(it.notes)}</div>`:''}</div><div class="flex gap6"><button class="bic" onclick="openItinerary('${it.id}')">✏️</button><button class="bic d" onclick="delItinerary('${it.id}')">🗑️</button></div></div>`).join('');
+}
+function openItinerary(id=''){
+  const items=load(K.itinerary,[]);const it=id?items.find(x=>x.id===id):null;
+  openModal(`<div class="modal-hdr"><div class="modal-title">${it?'Edit Event':'Add Itinerary Event'}</div><button class="bic" onclick="closeModal()">✕</button></div>
+    <div class="fr"><div class="fg"><label>Time *</label><input type="time" id="it-t" value="${escapeHTML(it?.time||'')}"></div><div class="fg"><label>Event Name *</label><input type="text" id="it-e" value="${escapeHTML(it?.event||'')}" placeholder="e.g. Ceremony begins"></div></div>
+    <div class="fr"><div class="fg"><label>Person(s)</label><input type="text" id="it-p" value="${escapeHTML(it?.person||'')}" placeholder="e.g. Bride + Groom"></div><div class="fg"><label>Location</label><input type="text" id="it-l" value="${escapeHTML(it?.location||'')}" placeholder="e.g. Main Hall"></div></div>
+    <div class="fg"><label>Notes</label><input type="text" id="it-n" value="${escapeHTML(it?.notes||'')}" placeholder="Optional notes"></div>
+    <div class="modal-ftr"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveItinerary('${id}')">Save</button></div>`);
+}
+function saveItinerary(id){
+  const items=load(K.itinerary,[]);
+  const d={time:document.getElementById('it-t').value,event:document.getElementById('it-e').value.trim(),person:document.getElementById('it-p').value.trim(),location:document.getElementById('it-l').value.trim(),notes:document.getElementById('it-n').value.trim()};
+  if(!d.time||!d.event){toast('Time and event name required','err');return;}
+  if(id){const i=items.findIndex(x=>x.id===id);if(i>=0)items[i]={...items[i],...d};}else{items.push({id:uid(),...d});}
+  save(K.itinerary,items);closeModal();renderItinerary();toast('Event saved','ok');
+}
+function delItinerary(id){confirm2('Delete this event?','',()=>{save(K.itinerary,load(K.itinerary,[]).filter(x=>x.id!==id));renderItinerary();toast('Deleted','ok');});}
+
+// ═══════════════════════════════════════════════════════
+// WEDDING PARTY
+// ═══════════════════════════════════════════════════════
+function renderParty(){
+  const members=load(K.party,[]);const el=document.getElementById('partyGrid');
+  if(members.length===0){el.innerHTML=`<div class="empty"><span class="empty-ico">👗</span><h3>No wedding party members yet</h3><p>Add your MOH, bridesmaids, best man, groomsmen, and key people</p><button class="btn btn-primary" onclick="openPartyMember()">+ Add Member</button></div>`;return;}
+  el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">`+members.map(m=>`<div class="pm-card"><div class="pm-role">${escapeHTML(m.role)}</div><div class="pm-name">${escapeHTML(m.name)}</div>${m.phone?`<div class="pm-info">📞 ${escapeHTML(m.phone)}</div>`:''}${m.email?`<div class="pm-info">✉️ ${escapeHTML(m.email)}</div>`:''}${m.attire?`<div class="muted sm mt8">👗 ${escapeHTML(m.attire)}</div>`:''}${m.notes?`<div class="muted sm">📝 ${escapeHTML(m.notes)}</div>`:''}<div class="flex gap8" style="justify-content:center;margin-top:10px"><button class="btn btn-secondary btn-sm" onclick="openPartyMember('${m.id}')">✏️ Edit</button><button class="btn btn-danger btn-sm" onclick="delPartyMember('${m.id}')">🗑️</button></div></div>`).join('')+'</div>';
+}
+function openPartyMember(id=''){
+  const members=load(K.party,[]);const m=id?members.find(x=>x.id===id):null;
+  openModal(`<div class="modal-hdr"><div class="modal-title">${m?'Edit Member':'Add Party Member'}</div><button class="bic" onclick="closeModal()">✕</button></div>
+    <div class="fr"><div class="fg"><label>Name *</label><input type="text" id="pm-n" value="${escapeHTML(m?.name||'')}" placeholder="Full name"></div><div class="fg"><label>Role</label><select id="pm-r">${PARTY_ROLES.map(r=>`<option ${m?.role===r?'selected':''}>${r}</option>`).join('')}</select></div></div>
+    <div class="fr"><div class="fg"><label>Phone</label><input type="tel" id="pm-p" value="${escapeHTML(m?.phone||'')}" placeholder="+1 555 0000"></div><div class="fg"><label>Email</label><input type="email" id="pm-e" value="${escapeHTML(m?.email||'')}" placeholder="email@example.com"></div></div>
+    <div class="fg"><label>Attire</label><input type="text" id="pm-a" value="${escapeHTML(m?.attire||'')}" placeholder="e.g. Sage green gown, Black tuxedo"></div>
+    <div class="fg"><label>Notes</label><textarea id="pm-nt" rows="2">${escapeHTML(m?.notes||'')}</textarea></div>
+    <div class="modal-ftr"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="savePartyMember('${id}')">Save</button></div>`);
+}
+function savePartyMember(id){
+  const members=load(K.party,[]);
+  const d={name:document.getElementById('pm-n').value.trim(),role:document.getElementById('pm-r').value,phone:document.getElementById('pm-p').value.trim(),email:document.getElementById('pm-e').value.trim(),attire:document.getElementById('pm-a').value.trim(),notes:document.getElementById('pm-nt').value.trim()};
+  if(!d.name){toast('Name required','err');return;}
+  if(id){const i=members.findIndex(m=>m.id===id);if(i>=0)members[i]={...members[i],...d};}else{members.push({id:uid(),...d});}
+  save(K.party,members);closeModal();renderParty();toast('Saved','ok');
+}
+function delPartyMember(id){const members=load(K.party,[]);const m=members.find(x=>x.id===id);confirm2(`Remove ${m?escapeHTML(m.name):'this person'}?`,'',()=>{save(K.party,members.filter(x=>x.id!==id));renderParty();toast('Removed','ok');});}
+
+// ═══════════════════════════════════════════════════════
+// MUSIC
+// ═══════════════════════════════════════════════════════
+function renderMusic(){
+  const songs=load(K.music,[]);const el=document.getElementById('musicSections');
+  if(songs.length===0){el.innerHTML=`<div class="empty"><span class="empty-ico">🎵</span><h3>No songs added yet</h3><p>Build your wedding music playlist and do-not-play list</p><button class="btn btn-primary" onclick="openSong()">+ Add Song</button></div>`;return;}
+  el.innerHTML=MUSIC_SECS.map(sec=>{const ss=songs.filter(s=>s.section===sec);if(!ss.length)return'';return`<div class="card"><div class="card-hdr"><div class="card-title">${sec}</div><div class="muted sm">${ss.length} song${ss.length!==1?'s':''}</div></div>${ss.map((s,i)=>`<div class="music-row"><div class="music-num">${i+1}</div><div style="flex:1"><div style="font-weight:600;font-size:.875rem">${escapeHTML(s.song)}</div><div class="muted sm">${escapeHTML(s.artist)}</div></div>${s.type==='donotplay'?'<span class="badge bg-red">Do Not Play</span>':''}<div class="flex gap6"><button class="bic" onclick="openSong('${s.id}')">✏️</button><button class="bic d" onclick="delSong('${s.id}')">🗑️</button></div></div>`).join('')}</div>`;}).join('');
+}
+function openSong(id=''){
+  const songs=load(K.music,[]);const s=id?songs.find(x=>x.id===id):null;
+  openModal(`<div class="modal-hdr"><div class="modal-title">${s?'Edit Song':'Add Song'}</div><button class="bic" onclick="closeModal()">✕</button></div>
+    <div class="fr"><div class="fg"><label>Song Title *</label><input type="text" id="ms-s" value="${escapeHTML(s?.song||'')}" placeholder="Song title"></div><div class="fg"><label>Artist</label><input type="text" id="ms-a" value="${escapeHTML(s?.artist||'')}" placeholder="Artist name"></div></div>
+    <div class="fr"><div class="fg"><label>Section</label><select id="ms-sec">${MUSIC_SECS.map(sec=>`<option ${s?.section===sec?'selected':''}>${sec}</option>`).join('')}</select></div><div class="fg"><label>Type</label><select id="ms-t"><option value="play" ${s?.type!=='donotplay'?'selected':''}>Must Play ✅</option><option value="donotplay" ${s?.type==='donotplay'?'selected':''}>Do Not Play ❌</option></select></div></div>
+    <div class="modal-ftr"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveSong('${id}')">Save Song</button></div>`);
+}
+function saveSong(id){
+  const songs=load(K.music,[]);
+  const d={song:document.getElementById('ms-s').value.trim(),artist:document.getElementById('ms-a').value.trim(),section:document.getElementById('ms-sec').value,type:document.getElementById('ms-t').value};
+  if(!d.song){toast('Song title required','err');return;}
+  if(id){const i=songs.findIndex(s=>s.id===id);if(i>=0)songs[i]={...songs[i],...d};}else{songs.push({id:uid(),...d});}
+  save(K.music,songs);closeModal();renderMusic();toast('Song saved','ok');
+}
+function delSong(id){confirm2('Remove this song?','',()=>{save(K.music,load(K.music,[]).filter(s=>s.id!==id));renderMusic();toast('Removed','ok');});}
+
+// ═══════════════════════════════════════════════════════
+// GIFTS
+// ═══════════════════════════════════════════════════════
+function renderGifts(){
+  const gifts=load(K.gifts,[]);
+  const total=gifts.reduce((a,g)=>a+(Number(g.value)||0),0);
+  const thanks=gifts.filter(g=>g.thankyou).length;
+  document.getElementById('giftStats').textContent=`${gifts.length} gifts · ${fmt(total)} total value · ${thanks} thank-you notes sent`;
+  const tbody=document.getElementById('giftTbody');
+  if(gifts.length===0){tbody.innerHTML=`<tr><td colspan="6"><div class="empty"><span class="empty-ico">🎁</span><h3>No gifts recorded yet</h3><p>Track all gifts and send thank-you notes</p><button class="btn btn-primary" onclick="openGift()">+ Add Gift</button></div></td></tr>`;return;}
+  tbody.innerHTML=gifts.map(g=>`<tr><td style="font-weight:600">${escapeHTML(g.giver)}</td><td>${escapeHTML(g.gift||'—')}</td><td>${fmt(g.value)}</td><td>${g.thankyou?'<span class="badge bg-green">Sent ✅</span>':'<span class="badge bg-yellow">Pending</span>'}</td><td class="muted sm">${escapeHTML(g.notes||'—')}</td><td><div class="flex gap6"><button class="bic" onclick="openGift('${g.id}')">✏️</button><button class="bic d" onclick="delGift('${g.id}')">🗑️</button></div></td></tr>`).join('');
+}
+function openGift(id=''){
+  const gifts=load(K.gifts,[]);const g=id?gifts.find(x=>x.id===id):null;
+  openModal(`<div class="modal-hdr"><div class="modal-title">${g?'Edit Gift':'Add Gift'}</div><button class="bic" onclick="closeModal()">✕</button></div>
+    <div class="fr"><div class="fg"><label>From (Giver) *</label><input type="text" id="gf-g" value="${escapeHTML(g?.giver||'')}" placeholder="Name of giver"></div><div class="fg"><label>Gift Description</label><input type="text" id="gf-d" value="${escapeHTML(g?.gift||'')}" placeholder="What was the gift?"></div></div>
+    <div class="fr"><div class="fg"><label>Est. Value (${getCurrSym()})</label><input type="number" id="gf-v" value="${escapeHTML(g?.value||'')}" min="0"></div><div class="fg fg-cb" style="margin-top:24px"><label><input type="checkbox" id="gf-t" ${g?.thankyou?'checked':''}> Thank-You Note Sent</label></div></div>
+    <div class="fg"><label>Notes</label><input type="text" id="gf-n" value="${escapeHTML(g?.notes||'')}" placeholder="Optional notes"></div>
+    <div class="modal-ftr"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveGift('${id}')">Save Gift</button></div>`);
+}
+function saveGift(id){
+  const gifts=load(K.gifts,[]);
+  const d={giver:document.getElementById('gf-g').value.trim(),gift:document.getElementById('gf-d').value.trim(),value:+document.getElementById('gf-v').value||0,thankyou:document.getElementById('gf-t').checked,notes:document.getElementById('gf-n').value.trim()};
+  if(!d.giver){toast('Giver name required','err');return;}
+  if(id){const i=gifts.findIndex(g=>g.id===id);if(i>=0)gifts[i]={...gifts[i],...d};}else{gifts.push({id:uid(),...d});}
+  save(K.gifts,gifts);closeModal();renderGifts();toast('Gift saved','ok');
+}
+function delGift(id){const gifts=load(K.gifts,[]);const g=gifts.find(x=>x.id===id);confirm2(`Delete gift from ${g?escapeHTML(g.giver):'this giver'}?`,'',()=>{save(K.gifts,gifts.filter(x=>x.id!==id));renderGifts();toast('Deleted','ok');});}
+
+// ═══════════════════════════════════════════════════════
+// HONEYMOON
+// ═══════════════════════════════════════════════════════
+function renderHoneymoon(){
+  const h=load(K.honeymoon,{destination:'',startDate:'',endDate:'',budget:0,expenses:[]});
+  const expenses=h.expenses||[];
+  const spent=expenses.reduce((a,e)=>a+(Number(e.amount)||0),0);
+  const rem=(Number(h.budget)||0)-spent;
+  document.getElementById('hmStats').innerHTML=`
+    <div class="hm-hero"><div class="muted sm" style="color:rgba(255,255,255,.7)">Destination</div><div class="dest">${escapeHTML(h.destination||'Not set')}</div><div class="dates">${h.startDate||''}${h.endDate?' → '+h.endDate:''}</div></div>
+    <div class="sc"><div class="sc-label">Total Budget</div><div class="sc-val">${fmt(h.budget)}</div><div class="sc-sub">${fmt(spent)} spent</div></div>
+    <div class="sc"><div class="sc-label">Remaining</div><div class="sc-val" style="color:${rem<0?'var(--danger)':'var(--primary-dark)'}">${fmt(rem)}</div><div class="sc-sub">${rem<0?'Over budget':'Under budget'}</div></div>`;
+  const expEl=document.getElementById('hmExpenses');
+  if(expenses.length===0){expEl.innerHTML=`<div class="empty"><span class="empty-ico">✈️</span><h3>No expenses yet</h3><button class="btn btn-primary" onclick="openHoneymoonExp()">+ Add Expense</button></div>`;return;}
+  expEl.innerHTML=`<div style="display:grid;grid-template-columns:1fr 2fr 1fr 72px;gap:6px;padding:6px 0;border-bottom:1px solid var(--border);font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase"><div>Category</div><div>Description</div><div>Amount</div><div></div></div>`+
+    expenses.map(e=>`<div style="display:grid;grid-template-columns:1fr 2fr 1fr 72px;gap:6px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)"><span class="badge bg-blue">${escapeHTML(e.category)}</span><div class="sm">${escapeHTML(e.description)}</div><div style="font-weight:600">${fmt(e.amount)}</div><div class="flex gap6"><button class="bic" onclick="openHoneymoonExp('${e.id}')">✏️</button><button class="bic d" onclick="delHoneymoonExp('${e.id}')">🗑️</button></div></div>`).join('')+
+    `<div style="display:grid;grid-template-columns:1fr 2fr 1fr 72px;gap:6px;padding:10px 12px;background:var(--bg);border-radius:8px;margin-top:6px;font-weight:700;font-size:.875rem"><div>Total</div><div></div><div>${fmt(spent)}</div><div></div></div>`;
+}
+function openHoneymoonInfo(){
+  const h=load(K.honeymoon,{});
+  openModal(`<div class="modal-hdr"><div class="modal-title">Edit Honeymoon Info</div><button class="bic" onclick="closeModal()">✕</button></div>
+    <div class="fg"><label>Destination</label><input type="text" id="hm-d" value="${escapeHTML(h.destination||'')}" placeholder="e.g. Bali, Indonesia"></div>
+    <div class="fr"><div class="fg"><label>Start Date</label><input type="date" id="hm-s" value="${escapeHTML(h.startDate||'')}"></div><div class="fg"><label>End Date</label><input type="date" id="hm-e" value="${escapeHTML(h.endDate||'')}"></div></div>
+    <div class="fg"><label>Total Budget (${getCurrSym()})</label><input type="number" id="hm-b" value="${h.budget||''}" min="0"></div>
+    <div class="modal-ftr"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveHoneymoonInfo()">Save</button></div>`);
+}
+function saveHoneymoonInfo(){
+  const h=load(K.honeymoon,{expenses:[]});
+  h.destination=document.getElementById('hm-d').value.trim();h.startDate=document.getElementById('hm-s').value;h.endDate=document.getElementById('hm-e').value;h.budget=+document.getElementById('hm-b').value||0;
+  save(K.honeymoon,h);closeModal();renderHoneymoon();toast('Saved','ok');
+}
+function openHoneymoonExp(id=''){
+  const h=load(K.honeymoon,{expenses:[]});const e=id?(h.expenses||[]).find(x=>x.id===id):null;
+  openModal(`<div class="modal-hdr"><div class="modal-title">${e?'Edit Expense':'Add Expense'}</div><button class="bic" onclick="closeModal()">✕</button></div>
+    <div class="fr"><div class="fg"><label>Category</label><select id="hme-c">${HM_CATS.map(c=>`<option ${e?.category===c?'selected':''}>${c}</option>`).join('')}</select></div><div class="fg"><label>Amount (${getCurrSym()})</label><input type="number" id="hme-a" value="${escapeHTML(e?.amount||'')}" min="0"></div></div>
+    <div class="fg"><label>Description</label><input type="text" id="hme-d" value="${escapeHTML(e?.description||'')}" placeholder="e.g. Flight tickets x2"></div>
+    <div class="modal-ftr"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveHoneymoonExp('${id}')">Save</button></div>`);
+}
+function saveHoneymoonExp(id){
+  const h=load(K.honeymoon,{expenses:[]});if(!h.expenses)h.expenses=[];
+  const d={category:document.getElementById('hme-c').value,amount:+document.getElementById('hme-a').value||0,description:document.getElementById('hme-d').value.trim()};
+  if(id){const i=h.expenses.findIndex(e=>e.id===id);if(i>=0)h.expenses[i]={...h.expenses[i],...d};}else{h.expenses.push({id:uid(),...d});}
+  save(K.honeymoon,h);closeModal();renderHoneymoon();toast('Expense saved','ok');
+}
+function delHoneymoonExp(id){confirm2('Delete this expense?','',()=>{const h=load(K.honeymoon,{expenses:[]});h.expenses=(h.expenses||[]).filter(e=>e.id!==id);save(K.honeymoon,h);renderHoneymoon();toast('Deleted','ok');});}
+function clearHoneymoonExp(){confirm2('Clear all honeymoon expenses?','',()=>{const h=load(K.honeymoon,{});h.expenses=[];save(K.honeymoon,h);renderHoneymoon();toast('Expenses cleared','ok');},'Clear');}
+
+// ═══════════════════════════════════════════════════════
+// CONTACTS
+// ═══════════════════════════════════════════════════════
+function renderContacts(){
+  let contacts=load(K.contacts,[]);
+  if(ctFilter)contacts=contacts.filter(c=>c.name.toLowerCase().includes(ctFilter.toLowerCase())||(c.role||'').toLowerCase().includes(ctFilter.toLowerCase()));
+  const grid=document.getElementById('contactsGrid');const emEl=document.getElementById('contactsEmpty');
+  if(contacts.length===0){grid.innerHTML='';emEl.style.display='block';emEl.innerHTML=`<div class="empty"><span class="empty-ico">📞</span><h3>No contacts yet</h3><p>Add vendors, family, and key people for quick reference</p><button class="btn btn-primary" onclick="openContact()">+ Add Contact</button></div>`;return;}
+  emEl.style.display='none';grid.innerHTML=contacts.map(c=>`<div class="ct-card"><div class="ct-av">${c.name.charAt(0).toUpperCase()}</div><div class="ct-info"><div class="ct-name">${escapeHTML(c.name)}</div><div class="ct-role">${escapeHTML(c.role||'')}</div><div class="ct-det">${c.phone?'📞 '+escapeHTML(c.phone):''}${c.phone&&c.email?' · ':''}${c.email?'✉️ '+escapeHTML(c.email):''}</div>${c.notes?`<div class="muted sm">${escapeHTML(c.notes)}</div>`:''}</div><div class="flex gap6"><button class="bic" onclick="openContact('${c.id}')">✏️</button><button class="bic d" onclick="delContact('${c.id}')">🗑️</button></div></div>`).join('');
+}
+function openContact(id=''){
+  const contacts=load(K.contacts,[]);const c=id?contacts.find(x=>x.id===id):null;
+  openModal(`<div class="modal-hdr"><div class="modal-title">${c?'Edit Contact':'Add Contact'}</div><button class="bic" onclick="closeModal()">✕</button></div>
+    <div class="fr"><div class="fg"><label>Full Name *</label><input type="text" id="ct-n" value="${escapeHTML(c?.name||'')}" placeholder="Full name"></div><div class="fg"><label>Role / Relationship</label><input type="text" id="ct-r" value="${escapeHTML(c?.role||'')}" placeholder="e.g. Florist, Best Man"></div></div>
+    <div class="fr"><div class="fg"><label>Phone</label><input type="tel" id="ct-p" value="${escapeHTML(c?.phone||'')}" placeholder="+1 555 0000"></div><div class="fg"><label>Email</label><input type="email" id="ct-e" value="${escapeHTML(c?.email||'')}" placeholder="email@example.com"></div></div>
+    <div class="fg"><label>Notes</label><textarea id="ct-nt" rows="2">${escapeHTML(c?.notes||'')}</textarea></div>
+    <div class="modal-ftr"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveContact('${id}')">Save Contact</button></div>`);
+}
+function saveContact(id){
+  const contacts=load(K.contacts,[]);
+  const d={name:document.getElementById('ct-n').value.trim(),role:document.getElementById('ct-r').value.trim(),phone:document.getElementById('ct-p').value.trim(),email:document.getElementById('ct-e').value.trim(),notes:document.getElementById('ct-nt').value.trim()};
+  if(!d.name){toast('Name required','err');return;}
+  if(id){const i=contacts.findIndex(c=>c.id===id);if(i>=0)contacts[i]={...contacts[i],...d};}else{contacts.push({id:uid(),...d});}
+  save(K.contacts,contacts);closeModal();renderContacts();toast('Contact saved','ok');
+}
+function delContact(id){const contacts=load(K.contacts,[]);const c=contacts.find(x=>x.id===id);confirm2(`Remove ${c?escapeHTML(c.name):'this contact'}?`,'',()=>{save(K.contacts,contacts.filter(x=>x.id!==id));renderContacts();toast('Removed','ok');});}
+
+
+// ═══════════════════════════════════════════════════════
+// MOBILE MENU
+// ═══════════════════════════════════════════════════════
+function toggleMobileMenu(){
+  const sidebar=document.getElementById('sidebar');
+  const btn=document.getElementById('hamburgerBtn');
+  const overlay=document.getElementById('mobOverlay');
+  const hint=document.getElementById('mobileSeatingHint');
+  sidebar.classList.toggle('mobile-open');
+  btn.classList.toggle('open');
+  overlay.classList.toggle('visible');
+}
+function closeMobileMenu(){
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('hamburgerBtn').classList.remove('open');
+  document.getElementById('mobOverlay').classList.remove('visible');
+}
+// Close sidebar when nav item clicked on mobile
+document.querySelectorAll('.nav-item').forEach(n=>{
+  n.addEventListener('click',()=>{if(window.innerWidth<=768)closeMobileMenu();});
+});
+
+// ═══════════════════════════════════════════════════════
+// PRINT SECTION
+// ═══════════════════════════════════════════════════════
+function printSection(sectionId,title){
+  const page=document.getElementById('page-'+sectionId);
+  if(!page){window.print();return;}
+  // Make all pages invisible, target visible
+  document.body.classList.add('print-mode');
+  page.classList.add('print-target');
+  const originalTitle=document.title;
+  document.title=title+' — Wedding Planner';
+  window.print();
+  // Restore
+  document.body.classList.remove('print-mode');
+  page.classList.remove('print-target');
+  document.title=originalTitle;
+}
+
+// ═══════════════════════════════════════════════════════
+// CHECKLIST TEMPLATES
+// ═══════════════════════════════════════════════════════
+const CHECKLIST_TEMPLATES={
+  traditional:[
+    {name:'Set your wedding budget',tf:'12+ Months Before',priority:'High'},
+    {name:'Choose a wedding date',tf:'12+ Months Before',priority:'High'},
+    {name:'Book your ceremony venue',tf:'12+ Months Before',priority:'High'},
+    {name:'Book your reception venue',tf:'12+ Months Before',priority:'High'},
+    {name:'Start your guest list',tf:'12+ Months Before',priority:'High'},
+    {name:'Hire a wedding planner (optional)',tf:'12+ Months Before',priority:'Medium'},
+    {name:'Book photographer',tf:'6–12 Months Before',priority:'High'},
+    {name:'Book videographer',tf:'6–12 Months Before',priority:'Medium'},
+    {name:'Book caterer',tf:'6–12 Months Before',priority:'High'},
+    {name:'Order wedding dress',tf:'6–12 Months Before',priority:'High'},
+    {name:'Book florist',tf:'6–12 Months Before',priority:'High'},
+    {name:'Book band or DJ',tf:'6–12 Months Before',priority:'High'},
+    {name:'Book officiant',tf:'6–12 Months Before',priority:'High'},
+    {name:'Choose bridal party',tf:'6–12 Months Before',priority:'High'},
+    {name:'Plan honeymoon destination',tf:'6–12 Months Before',priority:'Medium'},
+    {name:'Send save the dates',tf:'3–6 Months Before',priority:'High'},
+    {name:'Register for gifts',tf:'3–6 Months Before',priority:'Medium'},
+    {name:'Choose wedding cake',tf:'3–6 Months Before',priority:'High'},
+    {name:'Book hair & makeup',tf:'3–6 Months Before',priority:'High'},
+    {name:'Book transport (limo/car)',tf:'3–6 Months Before',priority:'Medium'},
+    {name:'Order bridesmaid dresses',tf:'3–6 Months Before',priority:'High'},
+    {name:'Order groomsmen attire',tf:'3–6 Months Before',priority:'High'},
+    {name:'Send invitations',tf:'3–6 Months Before',priority:'High'},
+    {name:'Book honeymoon flights & hotel',tf:'3–6 Months Before',priority:'High'},
+    {name:'Finalize guest list',tf:'1–3 Months Before',priority:'High'},
+    {name:'Final dress fitting',tf:'1–3 Months Before',priority:'High'},
+    {name:'Plan ceremony details & vows',tf:'1–3 Months Before',priority:'High'},
+    {name:'Plan reception programme',tf:'1–3 Months Before',priority:'High'},
+    {name:'Chase RSVPs',tf:'1–3 Months Before',priority:'High'},
+    {name:'Arrange accommodation for guests',tf:'1–3 Months Before',priority:'Medium'},
+    {name:'Create seating chart',tf:'2–4 Weeks Before',priority:'High'},
+    {name:'Confirm all vendors',tf:'2–4 Weeks Before',priority:'High'},
+    {name:'Final vendor payments',tf:'2–4 Weeks Before',priority:'High'},
+    {name:'Prepare vendor tips',tf:'2–4 Weeks Before',priority:'Medium'},
+    {name:'Pick up wedding rings',tf:'2–4 Weeks Before',priority:'High'},
+    {name:'Rehearsal dinner',tf:'Wedding Week',priority:'High'},
+    {name:'Final walkthrough with venue coordinator',tf:'Wedding Week',priority:'High'},
+    {name:'Prepare emergency kit',tf:'Wedding Week',priority:'Medium'},
+    {name:'Pack for honeymoon',tf:'Wedding Week',priority:'Medium'},
+    {name:"Get a good night's sleep",tf:'Wedding Day',priority:'High'},
+    {name:'Enjoy every moment!',tf:'Wedding Day',priority:'High'},
+  ],
+  small:[
+    {name:'Set your wedding budget',tf:'12+ Months Before',priority:'High'},
+    {name:'Choose a wedding date',tf:'12+ Months Before',priority:'High'},
+    {name:'Book intimate venue (restaurant, garden, home)',tf:'12+ Months Before',priority:'High'},
+    {name:'Finalise your guest list (under 50)',tf:'12+ Months Before',priority:'High'},
+    {name:'Book officiant',tf:'6–12 Months Before',priority:'High'},
+    {name:'Book photographer (half day)',tf:'6–12 Months Before',priority:'High'},
+    {name:'Order wedding attire',tf:'6–12 Months Before',priority:'High'},
+    {name:'Choose catering (restaurant, private chef, or catering company)',tf:'6–12 Months Before',priority:'High'},
+    {name:'Send save the dates',tf:'3–6 Months Before',priority:'High'},
+    {name:'Order wedding cake or dessert',tf:'3–6 Months Before',priority:'Medium'},
+    {name:'Book hair & makeup',tf:'3–6 Months Before',priority:'Medium'},
+    {name:'Send invitations',tf:'3–6 Months Before',priority:'High'},
+    {name:'Book honeymoon',tf:'3–6 Months Before',priority:'Medium'},
+    {name:'Confirm RSVPs',tf:'1–3 Months Before',priority:'High'},
+    {name:'Plan ceremony order',tf:'1–3 Months Before',priority:'High'},
+    {name:'Create seating plan',tf:'2–4 Weeks Before',priority:'High'},
+    {name:'Confirm all suppliers',tf:'2–4 Weeks Before',priority:'High'},
+    {name:'Pick up rings',tf:'2–4 Weeks Before',priority:'High'},
+    {name:'Prepare any DIY decorations',tf:'Wedding Week',priority:'Medium'},
+    {name:'Final dress fitting',tf:'Wedding Week',priority:'High'},
+    {name:'Enjoy your intimate celebration!',tf:'Wedding Day',priority:'High'},
+  ],
+  large:[
+    {name:'Set your wedding budget (allow 10% contingency)',tf:'12+ Months Before',priority:'High'},
+    {name:'Choose a wedding date',tf:'12+ Months Before',priority:'High'},
+    {name:'Hire a professional wedding planner',tf:'12+ Months Before',priority:'High'},
+    {name:'Book ceremony venue (100+ guests)',tf:'12+ Months Before',priority:'High'},
+    {name:'Book reception venue (banquet hall/hotel)',tf:'12+ Months Before',priority:'High'},
+    {name:'Create initial guest list',tf:'12+ Months Before',priority:'High'},
+    {name:'Book high-demand photographer',tf:'12+ Months Before',priority:'High'},
+    {name:'Book videographer',tf:'12+ Months Before',priority:'High'},
+    {name:'Book live band',tf:'12+ Months Before',priority:'High'},
+    {name:'Book catering company',tf:'12+ Months Before',priority:'High'},
+    {name:'Order wedding dress (allow 8 months)',tf:'12+ Months Before',priority:'High'},
+    {name:'Book florist',tf:'6–12 Months Before',priority:'High'},
+    {name:'Book wedding cake designer',tf:'6–12 Months Before',priority:'High'},
+    {name:'Book transport (multiple vehicles)',tf:'6–12 Months Before',priority:'High'},
+    {name:'Book hotel room block for guests',tf:'6–12 Months Before',priority:'High'},
+    {name:'Choose & book officiant',tf:'6–12 Months Before',priority:'High'},
+    {name:'Choose bridal party & groomsmen',tf:'6–12 Months Before',priority:'High'},
+    {name:'Book hair & makeup team',tf:'6–12 Months Before',priority:'High'},
+    {name:'Plan honeymoon',tf:'6–12 Months Before',priority:'Medium'},
+    {name:'Send save the dates',tf:'3–6 Months Before',priority:'High'},
+    {name:'Order bridesmaid dresses',tf:'3–6 Months Before',priority:'High'},
+    {name:'Order groomsmen attire',tf:'3–6 Months Before',priority:'High'},
+    {name:'Register for gifts (multiple stores)',tf:'3–6 Months Before',priority:'Medium'},
+    {name:'Send formal invitations',tf:'3–6 Months Before',priority:'High'},
+    {name:'Plan cocktail hour entertainment',tf:'3–6 Months Before',priority:'Medium'},
+    {name:'Book rehearsal dinner venue',tf:'3–6 Months Before',priority:'High'},
+    {name:'Plan menu & wine selection',tf:'1–3 Months Before',priority:'High'},
+    {name:'Finalize seating for all guests',tf:'1–3 Months Before',priority:'High'},
+    {name:'Chase all RSVPs',tf:'1–3 Months Before',priority:'High'},
+    {name:'Create detailed vendor schedule',tf:'1–3 Months Before',priority:'High'},
+    {name:'Final dress fittings — multiple rounds',tf:'1–3 Months Before',priority:'High'},
+    {name:'Create table name cards',tf:'2–4 Weeks Before',priority:'High'},
+    {name:'Final payments to all vendors',tf:'2–4 Weeks Before',priority:'High'},
+    {name:'Distribute vendor contact sheet',tf:'2–4 Weeks Before',priority:'High'},
+    {name:'Rehearsal dinner',tf:'Wedding Week',priority:'High'},
+    {name:'Full venue walkthrough with coordinator',tf:'Wedding Week',priority:'High'},
+    {name:'Pack emergency kit (large)',tf:'Wedding Week',priority:'Medium'},
+    {name:'Brief wedding party on the day schedule',tf:'Wedding Week',priority:'High'},
+    {name:"Get a full night's sleep",tf:'Wedding Day',priority:'High'},
+    {name:'Thank your vendors in person',tf:'Wedding Day',priority:'Medium'},
+  ],
+  minimal:[
+    {name:'Decide on a date & location',tf:'12+ Months Before',priority:'High'},
+    {name:'Set a simple budget',tf:'12+ Months Before',priority:'High'},
+    {name:'Book officiant or courthouse',tf:'6–12 Months Before',priority:'High'},
+    {name:'Invite closest family/friends (under 20)',tf:'6–12 Months Before',priority:'High'},
+    {name:'Choose simple attire',tf:'6–12 Months Before',priority:'Medium'},
+    {name:'Book a photographer for a few hours',tf:'6–12 Months Before',priority:'Medium'},
+    {name:'Arrange dinner reservation or catering',tf:'3–6 Months Before',priority:'High'},
+    {name:'Order or make a simple cake',tf:'3–6 Months Before',priority:'Low'},
+    {name:'Notify guests with informal invites',tf:'3–6 Months Before',priority:'High'},
+    {name:'Plan vows or ceremony words',tf:'1–3 Months Before',priority:'High'},
+    {name:'Get marriage licence',tf:'1–3 Months Before',priority:'High'},
+    {name:'Confirm dinner/catering',tf:'2–4 Weeks Before',priority:'High'},
+    {name:'Enjoy your meaningful day!',tf:'Wedding Day',priority:'High'},
+  ],
+};
+
+function openChecklistTemplates(){
+  const existing=load(K.tasks,[]);
+  const warnHtml=existing.length>0
+    ?`<div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:.85rem">⚠️ You already have <strong>${existing.length} task(s)</strong>. New tasks will be <strong>added</strong> alongside your existing ones (no tasks will be deleted).</div>`
+    :'';
+  openModal(`<div class="modal-hdr"><div class="modal-title">📋 Load Recommended Checklist</div><button class="bic" onclick="closeModal()">✕</button></div>
+    ${warnHtml}
+    <p style="color:var(--muted);font-size:.875rem;margin-bottom:16px">Choose a wedding style to load a recommended task list. Tasks will be added to your existing timeline.</p>
+    <div class="g2" style="gap:12px">
+      ${[['traditional','🌹','Traditional Wedding','Full ceremony & reception, 80–200 guests'],
+         ['small','🌿','Small Wedding','Intimate celebration, 20–50 guests'],
+         ['large','🎊','Large Wedding','Grand event, 150+ guests'],
+         ['minimal','🕊️','Minimal Wedding','Simple & meaningful, under 20 guests']].map(([t,e,n,d])=>`
+        <div style="border:2px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all .15s" onclick="loadChecklistTemplate('${t}')" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="font-size:1.5rem;margin-bottom:6px">${e}</div>
+          <div style="font-weight:700;font-size:.9rem">${n}</div>
+          <div style="font-size:.78rem;color:var(--muted);margin-top:3px">${d}</div>
+          <div style="font-size:.72rem;color:var(--primary);margin-top:6px;font-weight:600">${CHECKLIST_TEMPLATES[t].length} tasks</div>
+        </div>`).join('')}
+    </div>
+    <div class="modal-ftr"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button></div>`);
+}
+
+function loadChecklistTemplate(type){
+  const template=CHECKLIST_TEMPLATES[type];if(!template)return;
+  const existing=load(K.tasks,[]);
+  const newTasks=template.map(t=>({id:uid(),name:t.name,tf:t.tf,priority:t.priority,done:false,dueDate:'',notes:''}));
+  save(K.tasks,[...existing,...newTasks]);
+  closeModal();nav('timeline');
+  toast(`Loaded ${newTasks.length} tasks from ${type} template!`,'ok');
+}
+
+// ═══════════════════════════════════════════════════════
+// EMERGENCY / WEDDING DAY INFO
+// ═══════════════════════════════════════════════════════
+const EMERGENCY_DEFAULTS={venueAddress:'',emergencyContact:'',coordinator:'',photographer:'',caterer:'',dj:'',transport:'',notes:'',licenseReady:false,ringsReady:false,emergencyKitReady:false};
+
+function renderEmergency(){
+  const e=load(K.emergency,EMERGENCY_DEFAULTS);
+  const el=document.getElementById('emergencyContent');
+  if(!el)return;
+  const fields=[
+    ['📍 Venue Address',e.venueAddress],['🚨 Emergency Contact',e.emergencyContact],
+    ['🎯 Wedding Coordinator',e.coordinator],['📷 Photographer Contact',e.photographer],
+    ['🍽️ Caterer Contact',e.caterer],['🎵 DJ / Music Contact',e.dj],
+    ['🚗 Transport Contact',e.transport],
+  ];
+  const hasData=fields.some(([,v])=>v&&v.trim());
+  if(!hasData&&!e.notes){
+    el.innerHTML=`<div class="empty"><span class="empty-ico">🚨</span><h3>No wedding day info yet</h3><p>Add venue address, emergency contacts, and reminders for your big day.</p><button class="btn btn-primary" onclick="openEmergency()">+ Add Info</button></div>`;return;
+  }
+  el.innerHTML=`
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">📋 Key Contacts & Information</div></div>
+      <div class="wd-grid">
+        ${fields.map(([label,val])=>val&&val.trim()?`<div class="wd-field"><div class="wd-label">${label}</div><div class="wd-val">${escapeHTML(val)}</div></div>`:'').join('')}
+      </div>
+      ${e.notes?`<div style="margin-top:14px"><div style="font-weight:600;font-size:.85rem;margin-bottom:6px">📝 Important Notes</div><div style="font-size:.9rem;white-space:pre-wrap;color:var(--text)">${escapeHTML(e.notes)}</div></div>`:''}
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">✅ Day-Of Reminders</div></div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <div class="reminder-chip ${e.licenseReady?'done':'todo'}" onclick="toggleReminder('licenseReady')" style="cursor:pointer">${e.licenseReady?'✔':'○'} Marriage Licence</div>
+        <div class="reminder-chip ${e.ringsReady?'done':'todo'}" onclick="toggleReminder('ringsReady')" style="cursor:pointer">${e.ringsReady?'✔':'○'} Wedding Rings</div>
+        <div class="reminder-chip ${e.emergencyKitReady?'done':'todo'}" onclick="toggleReminder('emergencyKitReady')" style="cursor:pointer">${e.emergencyKitReady?'✔':'○'} Emergency Kit</div>
+      </div>
+      <div class="muted sm" style="margin-top:8px">Tap to toggle each reminder</div>
+    </div>`;
+}
+
+function toggleReminder(key){
+  const e=load(K.emergency,EMERGENCY_DEFAULTS);
+  e[key]=!e[key];
+  save(K.emergency,e);renderEmergency();
+}
+
+function openEmergency(){
+  const e=load(K.emergency,EMERGENCY_DEFAULTS);
+  openModal(`<div class="modal-hdr"><div class="modal-title">🚨 Wedding Day Information</div><button class="bic" onclick="closeModal()">✕</button></div>
+    <div class="fr"><div class="fg"><label>📍 Venue Address</label><input type="text" id="em-va" value="${escapeHTML(e.venueAddress||'')}" placeholder="Full venue address"></div><div class="fg"><label>🚨 Emergency Contact</label><input type="text" id="em-ec" value="${escapeHTML(e.emergencyContact||'')}" placeholder="Name + phone"></div></div>
+    <div class="fr"><div class="fg"><label>🎯 Wedding Coordinator</label><input type="text" id="em-co" value="${escapeHTML(e.coordinator||'')}" placeholder="Name + phone"></div><div class="fg"><label>📷 Photographer</label><input type="text" id="em-ph" value="${escapeHTML(e.photographer||'')}" placeholder="Name + phone"></div></div>
+    <div class="fr"><div class="fg"><label>🍽️ Caterer</label><input type="text" id="em-ca" value="${escapeHTML(e.caterer||'')}" placeholder="Name + phone"></div><div class="fg"><label>🎵 DJ / Music</label><input type="text" id="em-dj" value="${escapeHTML(e.dj||'')}" placeholder="Name + phone"></div></div>
+    <div class="fg"><label>🚗 Transport</label><input type="text" id="em-tr" value="${escapeHTML(e.transport||'')}" placeholder="Transport company + phone"></div>
+    <div class="fg"><label>📝 Important Notes</label><textarea id="em-nt" rows="3" placeholder="Any additional notes, reminders, or emergency information…">${escapeHTML(e.notes||'')}</textarea></div>
+    <div class="fr">
+      <div class="fg-cb"><label><input type="checkbox" id="em-li" ${e.licenseReady?'checked':''}> Marriage Licence Ready</label></div>
+      <div class="fg-cb"><label><input type="checkbox" id="em-ri" ${e.ringsReady?'checked':''}> Wedding Rings Ready</label></div>
+    </div>
+    <div class="fg-cb"><label><input type="checkbox" id="em-ki" ${e.emergencyKitReady?'checked':''}> Emergency Kit Ready</label></div>
+    <div class="modal-ftr"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveEmergency()">Save</button></div>`);
+}
+
+function saveEmergency(){
+  const d={
+    venueAddress:document.getElementById('em-va').value.trim(),
+    emergencyContact:document.getElementById('em-ec').value.trim(),
+    coordinator:document.getElementById('em-co').value.trim(),
+    photographer:document.getElementById('em-ph').value.trim(),
+    caterer:document.getElementById('em-ca').value.trim(),
+    dj:document.getElementById('em-dj').value.trim(),
+    transport:document.getElementById('em-tr').value.trim(),
+    notes:document.getElementById('em-nt').value.trim(),
+    licenseReady:document.getElementById('em-li').checked,
+    ringsReady:document.getElementById('em-ri').checked,
+    emergencyKitReady:document.getElementById('em-ki').checked,
+  };
+  save(K.emergency,d);closeModal();renderEmergency();toast('Wedding day info saved','ok');
+}
+
+// ═══════════════════════════════════════════════════════
+// MOBILE SEATING ASSIGN
+// ═══════════════════════════════════════════════════════
+function openMobileAssign(guestId){
+  const seating=load(K.seating,{tables:[]});
+  const gMap={};load(K.guests,[]).forEach(g=>{gMap[g.id]=g;});
+  const guest=gMap[guestId];if(!guest)return;
+  const tables=seating.tables.filter(t=>t.seats.some(s=>!s));
+  if(tables.length===0){toast('No tables with empty seats available. Add a table first.','err');return;}
+  openModal(`<div class="modal-hdr"><div class="modal-title">🪑 Assign Seat — ${escapeHTML(guest.name)}</div><button class="bic" onclick="closeModal()">✕</button></div>
+    <div class="fg"><label>Select Table</label><select id="mob-tbl" onchange="updateMobileSeats()" style="width:100%">
+      ${tables.map(t=>`<option value="${t.id}">${escapeHTML(t.name)} (${t.seats.filter(s=>!s).length} empty seats)</option>`).join('')}
+    </select></div>
+    <div class="fg"><label>Select Seat</label><select id="mob-seat" style="width:100%"></select></div>
+    <div class="modal-ftr"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="confirmMobileAssign('${guestId}')">Assign Seat</button></div>`);
+  setTimeout(updateMobileSeats,50);
+}
+
+function updateMobileSeats(){
+  const seating=load(K.seating,{tables:[]});
+  const tableId=document.getElementById('mob-tbl')?.value;
+  const table=seating.tables.find(t=>t.id===tableId);
+  const sel=document.getElementById('mob-seat');
+  if(!table||!sel)return;
+  sel.innerHTML=table.seats.map((s,i)=>s?null:`<option value="${i}">Seat ${i+1}</option>`).filter(Boolean).join('');
+}
+
+function confirmMobileAssign(guestId){
+  const tableId=document.getElementById('mob-tbl')?.value;
+  const seatIdx=parseInt(document.getElementById('mob-seat')?.value);
+  if(!tableId||isNaN(seatIdx)){toast('Please select a table and seat','err');return;}
+  const seating=load(K.seating,{tables:[]});
+  seating.tables.forEach(t=>{t.seats=t.seats.map(s=>s===guestId?null:s);});
+  const t=seating.tables.find(x=>x.id===tableId);
+  if(t&&(t.seats[seatIdx]===null||t.seats[seatIdx]===undefined)){t.seats[seatIdx]=guestId;}
+  else{toast('That seat is already taken','err');return;}
+  save(K.seating,seating);closeModal();renderSeating();toast('Guest seated!','ok');
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+(function init(){
+  // Build currency selects
+  buildCurrSelect('sc');
+  buildCurrSelect('scur');
+  
+  if(localStorage.getItem(K.init)){
+    document.getElementById('welcomeOverlay').style.display='none';
+    updateSidebar();nav('dashboard');
+  }
+  // else welcome modal stays visible
+})();
+</script>
+</body>
+</html>
